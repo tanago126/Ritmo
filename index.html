@@ -877,7 +877,11 @@
         entry.ytInput = 'https://www.youtube.com/watch?v='+entry.videoId;
         entry.ytAuto = true;
       } else {
-        entry.ytErrorMsg = (data && data.error && data.error.message) ? data.error.message : ('HTTP '+res.status);
+        if(!res.ok){
+          entry.ytErrorMsg = (data && data.error && data.error.message) ? data.error.message : ('HTTP '+res.status);
+        } else {
+          entry.ytErrorMsg = 'nenhum vídeo encontrado para esta pesquisa';
+        }
         console.error('Pesquisa YouTube falhou para "'+entry.name+'":', entry.ytErrorMsg, data);
         if(FALLBACK_YT_VIDEO_ID){
           entry.videoId = FALLBACK_YT_VIDEO_ID;
