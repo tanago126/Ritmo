@@ -39,7 +39,7 @@
   #setup{
     max-width:640px;
     margin:0 auto;
-    padding:48px 24px 100px;
+    padding:24px 24px 100px;
   }
   .brand{
     display:flex;
@@ -53,6 +53,45 @@
   }
   .logout-link:hover{color:var(--work);}
   .brand-mark{width:34px;height:34px; flex:none;}
+  .top-tabs{
+    display:flex; gap:8px; max-width:640px; margin:0 auto; padding:20px 24px 0; flex-wrap:wrap;
+  }
+  .top-tab-btn{
+    flex:1 1 140px; background:var(--panel); border:1.5px solid var(--line); border-radius:var(--radius);
+    color:var(--text-dim); font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
+    padding:11px 10px; cursor:pointer; text-align:center;
+  }
+  .top-tab-btn.active{border-color:var(--prep); background:rgba(255,201,60,0.1); color:var(--text);}
+  .top-tab-btn:hover{border-color:var(--prep);}
+  .tab-panel{max-width:640px; margin:0 auto; padding:24px 24px 100px;}
+  .eval-card{background:var(--panel); border-radius:6px; padding:18px 18px 20px; margin-bottom:16px;}
+  .eval-card h3{margin:0 0 6px; font-size:16px;}
+  .eval-hint{color:var(--text-dim); font-size:12.5px; margin:0 0 14px; line-height:1.5;}
+  .eval-card select{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius);
+    color:var(--text); font-size:14px; padding:9px 10px; font-family:'Inter',sans-serif;
+  }
+  .eval-result{margin-top:14px; font-size:13.5px; line-height:1.7; background:var(--panel-2); border-radius:var(--radius); padding:12px 14px; display:none;}
+  .eval-result.show{display:block;}
+  .eval-result b{color:var(--prep);}
+  .pt-lib-card{display:flex; gap:12px; background:var(--panel); border-radius:6px; padding:12px;}
+  .pt-lib-thumb{width:70px; height:70px; object-fit:cover; border-radius:4px; background:var(--panel-2); flex:none;}
+  .pt-lib-info h4{margin:0 0 4px; font-size:14px;}
+  .pt-lib-info p{margin:0; font-size:12.5px; color:var(--text-dim); line-height:1.5;}
+  .pt-lib-info p.missing{font-style:italic;}
+  .pt-lib-more-btn{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text-dim); border-radius:var(--radius);
+    padding:9px 18px; font-size:13px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .pt-lib-more-btn:hover{border-color:var(--prep); color:var(--prep);}
+  .hist-item{background:var(--panel-2); border-radius:var(--radius); padding:10px 12px; margin-bottom:8px;}
+  .hist-item-head{display:flex; align-items:center; gap:8px; justify-content:space-between;}
+  .hist-item-name{font-weight:700; font-size:13.5px;}
+  .hist-item-meta{font-size:11.5px; color:var(--text-dim);}
+  .hist-item-body{font-size:12.5px; color:var(--text-dim); margin-top:6px; line-height:1.5;}
+  .hist-del-btn{background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:14px;}
+  .hist-del-btn:hover{color:var(--work);}
+  .hist-group-name{font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.03em; color:var(--prep); margin:14px 0 6px;}
   h1.title{
     font-family:'Bebas Neue',sans-serif;
     font-size:44px;
@@ -400,6 +439,11 @@
   </div>
 </div>
 
+<div class="top-tabs">
+  <button class="top-tab-btn active" data-tab="prep" type="button">🏋️ Preparar aula</button>
+  <button class="top-tab-btn" data-tab="pt" type="button">📖 Guia PT</button>
+  <button class="top-tab-btn" data-tab="eval" type="button">🫀 Avaliação</button>
+</div>
 
 <!-- ================= SETUP ================= -->
 <div id="setup">
@@ -555,11 +599,116 @@
   <div style="height:40px;"></div>
 </div>
 
+<!-- ================= GUIA PT (biblioteca completa) ================= -->
+<div id="tabPtGuide" class="tab-panel" style="display:none;">
+  <p class="step-hint" style="margin-top:0;">Consulta a biblioteca completa de exercícios — imagem e, quando já disponível, descrição de como executar. Isto é só para consulta; para montares uma aula usa o separador "Preparar aula".</p>
+  <input type="text" id="ptLibSearch" placeholder="🔍 Pesquisar na biblioteca (1033 exercícios)…" autocomplete="off" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:11px 12px; font-family:'Inter',sans-serif;">
+  <div id="ptLibList" style="margin-top:16px; display:flex; flex-direction:column; gap:12px;"></div>
+  <div id="ptLibMore" style="text-align:center; margin-top:14px;"></div>
+</div>
+
+<!-- ================= AVALIAÇÃO (testes cardiorrespiratórios) ================= -->
+<div id="tabAvaliacao" class="tab-panel" style="display:none;">
+  <p class="step-hint" style="margin-top:0;">Calculadoras baseadas na tua folha de testes de avaliação cardiorrespiratória — as mesmas fórmulas, em formato de app.</p>
+
+  <div class="eval-card">
+    <label style="display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;">Nome da pessoa a avaliar</label>
+    <input type="text" id="evPersonName" placeholder="Ex.: Maria Silva" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:10px 12px; font-family:'Inter',sans-serif;">
+    <p class="eval-hint" style="margin:8px 0 0;">Preenche isto antes de guardares um resultado — cada cálculo abaixo passa a ter um botão "💾 Guardar" depois de clicares em "Calcular".</p>
+  </div>
+
+  <div class="eval-card">
+    <h3>Zonas de frequência cardíaca</h3>
+    <div class="field-grid">
+      <div class="field"><label>Idade</label><input type="number" id="evAge" value="46" min="10" max="100"></div>
+      <div class="field"><label>Fc repouso (bpm)</label><input type="number" id="evRestHr" value="68" min="30" max="120"></div>
+      <div class="field"><label>Intensidade mínima</label><input type="number" id="evIntLow" value="65" min="1" max="100"></div>
+      <div class="field"><label>Intensidade máxima</label><input type="number" id="evIntHigh" value="85" min="1" max="100"></div>
+    </div>
+    <button class="save-btn" id="evHrBtn" style="margin-top:14px;">CALCULAR</button>
+    <div class="eval-result" id="evHrResult"></div>
+    <button class="plan-link-btn" id="evHrSaveBtn" type="button" style="display:none; margin-top:8px;">💾 Guardar resultado para esta pessoa</button>
+    <div class="eval-hint" id="evHrSaveMsg" style="margin:4px 0 0;"></div>
+  </div>
+
+  <div class="eval-card">
+    <h3>Remo Concept2 — 2000 m</h3>
+    <p class="eval-hint">Estima o VO2máx a partir do peso e do tempo para remar 2000 m.</p>
+    <div class="field-grid">
+      <div class="field"><label>Sexo</label>
+        <select id="evRowSex"><option value="f">Mulher</option><option value="m">Homem</option></select>
+      </div>
+      <div class="field"><label>Peso (kg)</label><input type="number" id="evRowWeight" value="65" min="30" max="200"></div>
+      <div class="field"><label>Tempo (min, ex.: 8.5 = 8:30)</label><input type="number" id="evRowTime" value="8.5" min="3" max="20" step="0.01"></div>
+    </div>
+    <button class="save-btn" id="evRowBtn" style="margin-top:14px;">CALCULAR</button>
+    <div class="eval-result" id="evRowResult"></div>
+    <button class="plan-link-btn" id="evRowSaveBtn" type="button" style="display:none; margin-top:8px;">💾 Guardar resultado para esta pessoa</button>
+    <div class="eval-hint" id="evRowSaveMsg" style="margin:4px 0 0;"></div>
+  </div>
+
+  <div class="eval-card">
+    <h3>Teste de marcha submáximo (Ebbeling)</h3>
+    <p class="eval-hint">Indicado para adultos de baixo risco, aparentemente saudáveis, dos 20 aos 59 anos. Passadeira: 4 min de aquecimento + 4 min a velocidade constante com 5% de inclinação.</p>
+    <div class="field-grid">
+      <div class="field"><label>Sexo</label>
+        <select id="evEbbSex"><option value="m">Homem</option><option value="f">Mulher</option></select>
+      </div>
+      <div class="field"><label>Idade</label><input type="number" id="evEbbAge" value="46" min="10" max="100"></div>
+      <div class="field"><label>Velocidade (km/h)</label><input type="number" id="evEbbSpeed" value="5.5" min="3.2" max="6.8" step="0.1"></div>
+      <div class="field"><label>Fc média (min 7-8)</label><input type="number" id="evEbbHr" value="130" min="60" max="220"></div>
+    </div>
+    <button class="save-btn" id="evEbbBtn" style="margin-top:14px;">CALCULAR</button>
+    <div class="eval-result" id="evEbbResult"></div>
+    <button class="plan-link-btn" id="evEbbSaveBtn" type="button" style="display:none; margin-top:8px;">💾 Guardar resultado para esta pessoa</button>
+    <div class="eval-hint" id="evEbbSaveMsg" style="margin:4px 0 0;"></div>
+  </div>
+
+  <div class="eval-card">
+    <h3>Balke &amp; Ware (passadeira)</h3>
+    <p class="eval-hint">Indicado para sedentários, idosos ou historial de doença cardíaca. Velocidade constante (4,8 km/h mulheres / 5,3 km/h homens), termina aos 85% da Fc máx.</p>
+    <div class="field-grid">
+      <div class="field"><label>Sexo</label>
+        <select id="evBalkeSex"><option value="m">Homem</option><option value="f">Mulher</option></select>
+      </div>
+      <div class="field"><label>Minutos completos</label><input type="number" id="evBalkeTime" value="12" min="1" max="60" step="0.1"></div>
+    </div>
+    <button class="save-btn" id="evBalkeBtn" style="margin-top:14px;">CALCULAR</button>
+    <div class="eval-result" id="evBalkeResult"></div>
+    <button class="plan-link-btn" id="evBalkeSaveBtn" type="button" style="display:none; margin-top:8px;">💾 Guardar resultado para esta pessoa</button>
+    <div class="eval-hint" id="evBalkeSaveMsg" style="margin:4px 0 0;"></div>
+  </div>
+
+  <div class="eval-card">
+    <h3>Bruce submáximo (passadeira)</h3>
+    <p class="eval-hint">Termina aos 85% da Fc máx.; deve exceder 115 bpm em pelo menos 2 estádios.</p>
+    <div class="field-grid">
+      <div class="field"><label>Sexo</label>
+        <select id="evBruceSex"><option value="m">Homem</option><option value="f">Mulher</option></select>
+      </div>
+      <div class="field"><label>Minutos completos</label><input type="number" id="evBruceTime" value="9" min="1" max="30" step="0.1"></div>
+    </div>
+    <button class="save-btn" id="evBruceBtn" style="margin-top:14px;">CALCULAR</button>
+    <div class="eval-result" id="evBruceResult"></div>
+    <button class="plan-link-btn" id="evBruceSaveBtn" type="button" style="display:none; margin-top:8px;">💾 Guardar resultado para esta pessoa</button>
+    <div class="eval-hint" id="evBruceSaveMsg" style="margin:4px 0 0;"></div>
+  </div>
+
+  <div class="eval-card">
+    <h3>Histórico de avaliações guardadas</h3>
+    <input type="text" id="evHistSearch" placeholder="🔍 Filtrar por nome…" autocomplete="off" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:9px 10px; font-family:'Inter',sans-serif; margin-bottom:12px;">
+    <div id="evHistList"></div>
+  </div>
+
+  <div style="height:40px;"></div>
+</div>
+
 <div class="start-bar">
   <div style="max-width:592px; width:100%;">
     <button class="start-btn" id="startBtn" disabled>COMEÇAR AULA</button>
     <div class="warn" id="startWarn">Carrega pelo menos uma música para começar</div>
     <button class="plan-link-btn" id="planBtn" type="button">📄 Ver / imprimir plano desta aula</button>
+    <button class="plan-link-btn" id="ptGuideBtn" type="button">📖 Guia PT — como executar cada exercício</button>
   </div>
 </div>
 
@@ -691,6 +840,54 @@
     {name:"Burpees", work:40, rest:20}
   ];
   const IMG_BASE_PATH = "PT exercícios/PT exercícios/";
+
+  /* Descrições reais, pesquisadas na internet e escritas por nós (não são cópias literais
+     de nenhuma fonte) — cobrem por agora 40 dos exercícios mais comuns em HIIT/Tabata.
+     Vamos completando mais ao longo do tempo; guarda este ficheiro para continuarmos
+     de onde ficámos numa próxima conversa. */
+  const EXERCISE_DESCRIPTIONS = {
+    "burpees.gif": "Exercício completo de corpo inteiro. A partir da posição de pé, agacha-te e coloca as mãos no chão, salta com os pés para trás para a posição de prancha, faz uma flexão (opcional), salta com os pés de volta para junto das mãos e termina com um salto vertical de braços esticados. Mantém o core contraído e aterra sempre com os joelhos ligeiramente fletidos.",
+    "Dumbbell-Burpees.gif": "Variante do burpee feita segurando um haltere em cada mão durante todo o movimento. Segue a mesma sequência (agachar, prancha, flexão opcional, saltar de volta e saltar para cima), mas o peso extra aumenta a exigência nos ombros e no core — usa halteres leves.",
+    "Jack-Burpees.gif": "Burpee em que, no salto final, os pés se abrem lateralmente tipo \"jumping jack\" em vez de saltar apenas para cima. Aumenta a ativação dos abdutores da anca; mantém o resto da técnica do burpee igual.",
+    "Push-Up.gif": "Flexão de braços clássica. Começa em prancha alta, mãos ligeiramente mais largas que os ombros, corpo em linha reta da cabeça aos calcanhares. Desce o peito em direção ao chão com os cotovelos a cerca de 45° do tronco, e empurra de volta para cima. Trabalha peitorais, tríceps e ombros.",
+    "Diamond-Push-up.gif": "Variante da flexão com as mãos juntas por baixo do peito, formando um losango com polegares e indicadores. Aumenta bastante a exigência sobre o tríceps. Mantém os cotovelos próximos do tronco durante a descida.",
+    "Incline-Push-Up.gif": "Flexão feita com as mãos apoiadas numa superfície elevada (banco, caixa). Reduz o peso corporal levantado, sendo uma boa progressão para quem ainda não domina a flexão no chão. Mantém o corpo em linha reta.",
+    "Decline-Push-Up.gif": "Flexão feita com os pés apoiados numa superfície elevada e as mãos no chão. Aumenta a carga sobre a parte superior do peito e ombros, exigindo mais controlo do core para a anca não cair.",
+    "Knee-Push-Up.gif": "Versão mais acessível da flexão, feita com os joelhos apoiados no chão em vez dos pés. Mantém a linha reta entre joelhos, anca e ombros — ótima progressão para principiantes.",
+    "Pike-Push-up.gif": "Com a anca elevada, formando um \"V\" invertido, flete os cotovelos para levar a cabeça em direção ao chão entre as mãos e depois empurra de volta. Foca mais os ombros do que o peito.",
+    "Wall-Push-ups.gif": "Flexão feita em pé, com as mãos apoiadas numa parede à altura dos ombros. É a variante mais suave, ideal para iniciantes ou aquecimento.",
+    "Bodyweight-Squat.gif": "Pés à largura dos ombros, desce a anca para trás e para baixo como se fosses sentar numa cadeira, peito erguido e joelhos alinhados com os pés. Desce até pelo menos paralelo ao chão e sobe empurrando pelos calcanhares. Trabalha quadríceps, glúteos e isquiotibiais.",
+    "Jump-Squat.gif": "Agachamento normal seguido de um salto vertical explosivo na subida, com aterragem suave e amortecida. Adiciona potência e cardio ao agachamento — aterra sempre com os joelhos ligeiramente fletidos.",
+    "Split-Squat.gif": "Numa posição de passo (um pé à frente, outro atrás), desce verticalmente até o joelho de trás quase tocar o chão, tronco ereto e joelho da frente alinhado com o tornozelo. Trabalha cada perna isoladamente.",
+    "Pistol-Squat.gif": "Agachamento avançado numa perna só, com a outra esticada à frente sem tocar no chão. Desce o mais fundo possível mantendo o equilíbrio, e sobe pelo calcanhar de apoio. Pratica primeiro com apoio (parede/banco).",
+    "Skater-Squat.gif": "Numa perna só, com a outra dobrada atrás do corpo sem tocar no chão, desce como um agachamento até tocares ligeiramente o joelho de trás perto do calcanhar, e sobe. Trabalha glúteos, quadríceps e equilíbrio lateral.",
+    "Kettlebell-Swings.gif": "Movimento de anca (não de agachamento): dobra a anca para trás com a coluna neutra, e estica-a explosivamente para lançar o kettlebell até à altura do peito, braços relaxados a acompanhar. Trabalha glúteos, isquiotibiais e core.",
+    "Barbell-Deadlift.gif": "Com a barra próxima das canelas, agarra-a à largura dos ombros, dobra os joelhos até as canelas tocarem a barra, costas direitas e peito erguido, e levanta-te empurrando o chão até ficares totalmente em pé. Trabalha toda a cadeia posterior.",
+    "Stiff-Leg-Deadlift.gif": "Variante do deadlift com os joelhos quase esticados durante todo o movimento — a anca dobra para trás enquanto o peso desce junto às pernas, alongando os isquiotibiais. Foca-se mais nos isquiotibiais do que o deadlift tradicional.",
+    "Barbell-Bench-Press.gif": "Deitado num banco, pega ligeiramente mais larga que os ombros, desce a barra de forma controlada até tocar o meio do peito com os cotovelos a cerca de 45°, e empurra até à extensão total. Trabalha peito, tríceps e ombros — usa sempre segurança com cargas altas.",
+    "Mountain-climber.gif": "Em prancha alta, traz alternadamente cada joelho em direção ao peito num ritmo rápido, como a correr na horizontal. Mantém a anca baixa e o core contraído.",
+    "Cross-Body-Mountain-Climber.gif": "Igual ao mountain climber, mas cada joelho é levado na diagonal em direção ao cotovelo oposto, ativando mais os oblíquos.",
+    "Jumping-jack.gif": "De pé, salta abrindo simultaneamente pernas e braços (braços acima da cabeça), e no salto seguinte volta à posição inicial. Aquecimento cardiovascular clássico para o corpo todo.",
+    "Butt-Kicks.gif": "Corrida no lugar levando os calcanhares a tocar (ou quase tocar) os glúteos a cada passada. Tronco ereto, ritmo rápido — aquece os isquiotibiais e eleva o ritmo cardíaco.",
+    "Russian-Twist.gif": "Sentado com os joelhos dobrados e tronco ligeiramente inclinado para trás, roda o tronco de um lado para o outro, levando as mãos junto à anca em cada lado. Trabalha os oblíquos — mantém a coluna direita.",
+    "Bicycle-Crunch.gif": "Deitado de costas, mãos atrás da cabeça, traz um joelho ao peito enquanto rodas o tronco para levar o cotovelo oposto em direção a esse joelho, alternando os lados. Trabalha reto abdominal e oblíquos.",
+    "plank.gif": "Prancha isométrica de antebraços: corpo em linha reta da cabeça aos calcanhares, core e glúteos contraídos, sem a anca subir nem cair. Exercício fundamental de estabilidade do core, mantido por tempo.",
+    "Side-Plank-1.png": "Deitado de lado apoiado num antebraço, eleva a anca do chão mantendo o corpo em linha reta. Trabalha os oblíquos e estabilizadores laterais — mantém por tempo, alternando os lados.",
+    "Glute-Bridge-.gif": "Deitado de costas com joelhos dobrados e pés no chão, eleva a anca contraindo os glúteos até formar uma linha reta dos ombros aos joelhos, e desce com controlo. Foca sobretudo os glúteos.",
+    "Bird-Dog.gif": "De quatro apoios, estica em simultâneo o braço e a perna opostos, mantendo a anca e os ombros nivelados, sem rodar o tronco. Excelente para estabilidade do core e coordenação.",
+    "Dead-Bug.gif": "Deitado de costas com braços esticados para cima e joelhos dobrados a 90°, estica em simultâneo o braço e a perna opostos em direção ao chão, sem a lombar descolar do chão. Trabalho de core seguro para a coluna.",
+    "Superman-exercise.gif": "Deitado de barriga para baixo com braços esticados à frente, eleva simultaneamente braços, peito e pernas do chão, contraindo lombar e glúteos, e desce com controlo. Fortalece a cadeia posterior.",
+    "Flutter-Kicks.gif": "Deitado de costas com a lombar pressionada contra o chão, eleva ligeiramente as pernas esticadas e alterna pequenos batimentos verticais tipo \"nadar\". Trabalha a parte inferior do core.",
+    "Fire-Hydrant.gif": "De quatro apoios, com o joelho dobrado a 90°, eleva uma perna lateralmente sem rodar a anca nem o tronco, e volta com controlo. Trabalha o glúteo médio.",
+    "Donkey-Kicks.gif": "De quatro apoios, com o joelho dobrado a 90°, eleva uma perna para trás e para cima, contraindo o glúteo no topo, e desce com controlo sem a anca rodar. Isola bem o glúteo máximo.",
+    "Reverse-Crunch-1.gif": "Deitado de costas com as pernas elevadas e joelhos a 90°, usa os abdominais inferiores para elevar a anca do chão, trazendo os joelhos ao peito, e desce com controlo.",
+    "Lying-Leg-Raise.gif": "Deitado de costas com as pernas esticadas, eleva-as juntas até cerca de 90° sem deixar a lombar descolar do chão, e desce com controlo. Trabalha sobretudo a parte inferior do abdominal.",
+    "Standing-Calf-Raise.gif": "De pé, eleva-te sobre a ponta dos pés o mais alto possível, contraindo as gémeas, e desce lentamente. Foca gémeos e sóleo.",
+    "Step-up.gif": "Sobe para uma caixa ou banco com uma perna, empurrando principalmente pelo calcanhar dessa perna até ficares totalmente em pé em cima, e desce com controlo. Trabalha quadríceps e glúteos.",
+    "Wall-Sit-238x360.png": "Com as costas apoiadas numa parede, desce até os joelhos formarem 90° (como sentado numa cadeira invisível) e mantém isometricamente pelo tempo definido. Trabalho estático dos quadríceps, sem impacto nas articulações.",
+    "The-Box-Jump.gif": "De pé em frente a uma caixa estável, agacha-te ligeiramente e salta com os dois pés em simultâneo para cima da caixa, aterrando suavemente com os joelhos fletidos. Desce (não saltes para baixo) e repete."
+  };
+
   const EXERCISE_LIBRARY = [["4 Point Tummy Vacuum Exercise", "4-Point-Tummy-Vacuum-Exercise.gif"], ["45 Degree Incline Row", "45-Degree-Incline-Row.gif"], ["90 90 Hip Stretch", "90-90-Hip-Stretch.gif"], ["90 Degree Cable External Rotation", "90-Degree-Cable-External-Rotation-.gif"], ["Ab Coaster Machine", "Ab-Coaster-Machine.gif"], ["Ab Roller Crunch", "Ab-Roller-Crunch.gif"], ["Ab Straps Leg Raise", "Ab-Straps-Leg-Raise.gif"], ["Ab Wheel Rollout", "Ab-Wheel-Rollout.gif"], ["Abdominal bracing exercise", "Abdominal-bracing-exercise.png"], ["Abdominal bracing exercise 386x386", "Abdominal-bracing-exercise-386x386.png"], ["abdominal com resistencia do elastico", "abdominal-com-resistencia-do-elastico.gif"], ["abdominal stretch", "abdominal-stretch.gif"], ["abducao de pernas deitada com elastico", "abducao-de-pernas-deitada-com-elastico.gif"], ["Above Head Chest Stretch", "Above-Head-Chest-Stretch.gif"], ["Across Chest Shoulder Stretch", "Across-Chest-Shoulder-Stretch.gif"], ["Adductor Magnus Stretch", "Adductor-Magnus-Stretch.gif"], ["agachamento com elastico", "agachamento-com-elastico.gif"], ["All Fours Squad Stretch", "All-Fours-Squad-Stretch.gif"], ["Alternate Dumbbell Bench Press", "Alternate-Dumbbell-Bench-Press.gif"], ["Alternate Leg Raises", "Alternate-Leg-Raises.gif"], ["Alternate Lying Floor Leg Raise", "Alternate-Lying-Floor-Leg-Raise.gif"], ["Alternating Dumbbell Front Raise", "Alternating-Dumbbell-Front-Raise.gif"], ["Alternating Lying Dumbbell Triceps Extension", "Alternating-Lying-Dumbbell-Triceps-Extension.gif"], ["Archer Pull up", "Archer-Pull-up.gif"], ["Archer Push Up", "Archer-Push-Up.gif"], ["Arm Blaster Hammer Curl", "Arm-Blaster-Hammer-Curl.gif"], ["arm circles", "arm-circles.gif"], ["Arm Circles Shoulders", "Arm-Circles_Shoulders.gif"], ["arm leg raise", "arm-leg-raise.gif"], ["Arm Scissors", "Arm-Scissors.gif"], ["Arnold Press", "Arnold-Press.gif"], ["Asisted Triceps Dips", "Asisted-Triceps-Dips.gif"], ["Assault Air Runner", "Assault-Air-Runner.gif"], ["Assault AirBike", "Assault-AirBike.gif"], ["Assisted Chest Dip", "Assisted-Chest-Dip.gif"], ["Assisted Pull up", "Assisted-Pull-up.gif"], ["Astride Jumps", "Astride-Jumps.gif"], ["Back Pec Stretch", "Back-Pec-Stretch.gif"], ["Backhand Raise", "Backhand-Raise.gif"], ["Backward Jumping", "Backward-Jumping.gif"], ["Backwards Running", "Backwards-Running.gif"], ["Ball Russian Twist throw with partner", "Ball-Russian-Twist-throw-with-partner.gif"], ["Band Alternate Incline Chest Press", "Band-Alternate-Incline-Chest-Press-.gif"], ["Band Alternating Lat Pulldown", "Band-Alternating-Lat-Pulldown.gif"], ["Band Alternating Low Row with Twist", "Band-Alternating-Low-Row-with-Twist.gif"], ["band assisted pull up", "band-assisted-pull-up.gif"], ["Band Assisted Sprinter Run", "Band-Assisted-Sprinter-Run.gif"], ["Band Biceps Curl", "Band-Biceps-Curl.gif"], ["Band Front Lateral Raise", "Band-Front-Lateral-Raise.gif"], ["Band Lying Hip External Rotation", "Band-Lying-Hip-External-Rotation.gif"], ["Band pull apart", "Band-pull-apart.gif"], ["Band Pushdown", "Band-Pushdown.gif"], ["Band Seated Hip External Rotation", "Band-Seated-Hip-External-Rotation.gif"], ["Band Seated Hip Internal Rotation", "Band-Seated-Hip-Internal-Rotation.gif"], ["Band Seated Row", "Band-Seated-Row.gif"], ["Band Side Lying Clam", "Band-Side-Lying-Clam.gif"], ["Band Side Lying Leg Lift", "Band-Side-Lying-Leg-Lift.gif"], ["Band Single Arm Shoulder Press", "Band-Single-Arm-Shoulder-Press.gif"], ["Band Skull Crusher", "Band-Skull-Crusher.gif"], ["Band Standing Chest Press", "Band-Standing-Chest-Press.gif"], ["Banded Donkey Kicks", "Banded-Donkey-Kicks.gif"], ["Banded Fire Hydrant", "Banded-Fire-Hydrant.gif"], ["Banded Glute Bridge", "Banded-Glute-Bridge.gif"], ["Banded Glute Kickbacks", "Banded-Glute-Kickbacks.gif"], ["Banded Kettlebell Goblet Squat", "Banded-Kettlebell-Goblet-Squat.gif"], ["Banded Leg Curl", "Banded-Leg-Curl.gif"], ["Banded Lunge", "Banded-Lunge.gif"], ["Banded Overhead triceps extension", "Banded-Overhead-triceps-extension.gif"], ["Banded Seated Hip Abduction", "Banded-Seated-Hip-Abduction.gif"], ["Banded Single Leg Glute Bridge", "Banded-Single-Leg-Glute-Bridge.gif"], ["Banded Split Squat", "Banded-Split-Squat.gif"], ["Banded Standing Glute Kickback", "Banded-Standing-Glute-Kickback.gif"], ["Banded Standing Glute Kickback (1)", "Banded-Standing-Glute-Kickback (1).gif"], ["Banded Step up", "Banded-Step-up.gif"], ["Banded Thigh Fly", "Banded-Thigh-Fly.gif"], ["Banded Walk", "Banded-Walk.gif"], ["Barbell Alternate Biceps Curl", "Barbell-Alternate-Biceps-Curl.gif"], ["Barbell Bench Front Squat", "Barbell-Bench-Front-Squat.gif"], ["Barbell Bench Press", "Barbell-Bench-Press.gif"], ["Barbell Bent Arm Pullover", "Barbell-Bent-Arm-Pullover.gif"], ["Barbell Bent Over Row", "Barbell-Bent-Over-Row.gif"], ["Barbell Bulgarian Split Squat", "Barbell-Bulgarian-Split-Squat.gif"], ["Barbell Clean and Press", "Barbell-Clean-and-Press-.gif"], ["Barbell Curl", "Barbell-Curl.gif"], ["Barbell Curl On Arm Blaster", "Barbell-Curl-On-Arm-Blaster.gif"], ["Barbell Curtsey Lunge", "Barbell-Curtsey-Lunge.gif"], ["Barbell Deadlift", "Barbell-Deadlift.gif"], ["Barbell Decline Bent Arm Pullover", "Barbell-Decline-Bent-Arm-Pullover.gif"], ["Barbell Finger Curl", "Barbell-Finger-Curl.gif"], ["Barbell Floor Press", "Barbell-Floor-Press.gif"], ["Barbell Front Raise", "Barbell-Front-Raise.gif"], ["Barbell Front Raise Twist", "Barbell-Front-Raise-Twist.gif"], ["Barbell Glute Bridge", "Barbell-Glute-Bridge.gif"], ["Barbell Good Morning", "Barbell-Good-Morning.gif"], ["Barbell Hack Squat", "Barbell-Hack-Squat.gif"], ["Barbell Hang Clean", "Barbell-Hang-Clean.gif"], ["Barbell Heaving Snatch Balance", "Barbell-Heaving-Snatch-Balance.gif"], ["Barbell Hip Thrust", "Barbell-Hip-Thrust.gif"], ["Barbell Hip Thrust (1)", "Barbell-Hip-Thrust (1).gif"], ["Barbell Lateral Lunge", "Barbell-Lateral-Lunge.gif"], ["Barbell Lunge", "Barbell-Lunge.gif"], ["Barbell Lying Back of the Head Tricep Extension", "Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif"], ["Barbell Military Press", "Barbell-Military-Press.gif"], ["Barbell Muscle Snatch", "Barbell-Muscle-Snatch.gif"], ["Barbell One Arm Floor Press", "Barbell-One-Arm-Floor-Press.gif"], ["Barbell Pendlay Row", "Barbell-Pendlay-Row.gif"], ["Barbell Power Snatch", "Barbell-Power-Snatch.gif"], ["Barbell Rear Delt Raise", "Barbell-Rear-Delt-Raise.gif"], ["Barbell Reverse Close grip Bench Press", "Barbell-Reverse-Close-grip-Bench-Press.gif"], ["Barbell Reverse Curl", "Barbell-Reverse-Curl.gif"], ["Barbell Reverse Grip Skullcrusher", "Barbell-Reverse-Grip-Skullcrusher-1.gif"], ["Barbell Reverse Wrist Curl", "Barbell-Reverse-Wrist-Curl.gif"], ["Barbell Reverse Wrist Curl Over a Bench", "Barbell-Reverse-Wrist-Curl-Over-a-Bench.gif"], ["Barbell Rollout", "Barbell-Rollout.gif"], ["Barbell Romanian Deadlift", "Barbell-Romanian-Deadlift.gif"], ["Barbell Seated Calf Raise", "Barbell-Seated-Calf-Raise.gif"], ["Barbell Seated Twist", "Barbell-Seated-Twist.gif"], ["Barbell Shoulder Press", "Barbell-Shoulder-Press.gif"], ["Barbell Shrug", "Barbell-Shrug.gif"], ["Barbell Side Bend", "Barbell-Side-Bend.gif"], ["Barbell Single Leg Deadlift", "Barbell-Single-Leg-Deadlift.gif"], ["Barbell Single Leg Hip Thrust", "Barbell-Single-Leg-Hip-Thrust.gif"], ["Barbell Snatch", "Barbell-Snatch.gif"], ["Barbell Split Squat", "Barbell-Split-Squat.gif"], ["BARBELL SQUAT", "BARBELL-SQUAT.gif"], ["Barbell Step Up", "Barbell-Step-Up.gif"], ["Barbell Sumo Deadlift", "Barbell-Sumo-Deadlift.gif"], ["Barbell sumo squat", "Barbell-sumo-squat.gif"], ["Barbell Triceps Extension", "Barbell-Triceps-Extension.gif"], ["Barbell Upright Row", "Barbell-Upright-Row.gif"], ["barbell uprightrow", "barbell-uprightrow.gif"], ["barbell Wrist Curl", "barbell-Wrist-Curl.gif"], ["Battle Rope", "Battle-Rope.gif"], ["Bear Crawl", "Bear-Crawl.gif"], ["Behind The Back Barbell Wrist Curl", "Behind-The-Back-Barbell-Wrist-Curl.gif"], ["Behind The Neck Pull up", "Behind-The-Neck-Pull-up.gif"], ["Bench Dips", "Bench-Dips.gif"], ["Bench Glute Flutter Kicks", "Bench-Glute-Flutter-Kicks.gif"], ["Bench Pike Push up", "Bench-Pike-Push-up.gif"], ["Bench Press Machine Standing Calf Raise", "Bench-Press-Machine-Standing-Calf-Raise.gif"], ["Bench Side Bend", "Bench-Side-Bend.gif"], ["Bench Supported Dumbbell External Rotation", "Bench-Supported-Dumbbell-External-Rotation.gif"], ["Bent Over Barbell Reverse Raise", "Bent-Over-Barbell-Reverse-Raise.gif"], ["Bent Over Dumbbell Rear Delt Raise With Head On Bench", "Bent-Over-Dumbbell-Rear-Delt-Raise-With-Head-On-Bench.gif"], ["Bent Over Dumbbell Row", "Bent-Over-Dumbbell-Row.gif"], ["Bent Over Lateral Raise", "Bent-Over-Lateral-Raise.gif"], ["Bent Over Rear Delt Fly Gymstick", "Bent-Over-Rear-Delt-Fly-Gymstick.gif"], ["Bent Over Row Gymstick", "Bent-Over-Row-Gymstick.gif"], ["Bent Over Triceps Kickback", "Bent-Over-Triceps-Kickback.gif"], ["Bent Over Twist", "Bent-Over-Twist.gif"], ["Bicep Curl Machine", "Bicep-Curl-Machine.gif"], ["Biceps Leg Concentration Curl", "Biceps-Leg-Concentration-Curl.gif"], ["Bicycle Crunch", "Bicycle-Crunch.gif"], ["Bicycle Crunch Gymstick", "Bicycle-Crunch-Gymstick.gif"], ["Bicycle Twisting Crunch", "Bicycle-Twisting-Crunch.gif"], ["Bike", "Bike.gif"], ["Bird Dog", "Bird-Dog.gif"], ["Boat Pose Stretch", "Boat-Pose-Stretch.gif"], ["Body Ups", "Body-Ups.gif"], ["Bodyweight Box Squat", "Bodyweight-Box-Squat.gif"], ["Bodyweight Bulgarian Split Squat", "Bodyweight-Bulgarian-Split-Squat.gif"], ["bodyweight hip thrust", "bodyweight-hip-thrust.gif"], ["Bodyweight Military Press", "Bodyweight-Military-Press.gif"], ["bodyweight reverse lunge", "bodyweight-reverse-lunge.gif"], ["Bodyweight Single Leg Deadlift", "Bodyweight-Single-Leg-Deadlift.gif"], ["Bodyweight Skull Crushers", "Bodyweight-Skull-Crushers.gif"], ["Bodyweight Squat", "Bodyweight-Squat.gif"], ["Bodyweight Squat (1)", "Bodyweight-Squat (1).gif"], ["BODYWEIGHT SUMO SQUAT", "BODYWEIGHT-SUMO-SQUAT.gif"], ["Bodyweight Walking Lunge", "Bodyweight-Walking-Lunge.gif"], ["Bodyweight Windmill", "Bodyweight-Windmill.gif"], ["Bosu Ball Push Up", "Bosu-Ball-Push-Up.gif"], ["Bow Yoga Pose", "Bow-Yoga-Pose.gif"], ["Box pistol Squat", "Box-pistol-Squat.gif"], ["Boxer Shuffle Cardio", "Boxer-Shuffle-Cardio.gif"], ["Boxing Right Cross with boxing bag", "Boxing-Right-Cross-with-boxing-bag.gif"], ["Brachialis Pull up", "Brachialis-Pull-up.gif"], ["Bridge Hip Abduction", "Bridge-Hip-Abduction.gif"], ["Briskly Walking", "Briskly-Walking.gif"], ["burpees", "burpees.gif"], ["Butt Kicks", "Butt-Kicks.gif"], ["Butterfly Sit up", "Butterfly-Sit-up.gif"], ["Butterfly Stretch", "Butterfly-Stretch.gif"], ["Cable Bent Over Row", "Cable-Bent-Over-Row.gif"], ["Cable Concentration Curl", "Cable-Concentration-Curl.gif"], ["Cable Concentration Extension on knee", "Cable-Concentration-Extension-on-knee.gif"], ["Cable Crossover", "Cable-Crossover.gif"], ["Cable Crossover Lat Pulldown", "Cable-Crossover-Lat-Pulldown.gif"], ["Cable Crossover Triceps Extension", "Cable-Crossover-Triceps-Extension.gif"], ["cable curl", "cable-curl.gif"], ["Cable Donkey Kickback", "Cable-Donkey-Kickback.gif"], ["Cable External Shoulder Rotation", "Cable-External-Shoulder-Rotation.gif"], ["Cable Forward Lunge", "Cable-Forward-Lunge.gif"], ["Cable Front Raise", "Cable-Front-Raise.gif"], ["Cable Front Squat", "Cable-Front-Squat.gif"], ["Cable Half Kneeling Pallof Press", "Cable-Half-Kneeling-Pallof-Press.gif"], ["Cable Hip Abduction", "Cable-Hip-Abduction.gif"], ["Cable Hip Extension", "Cable-Hip-Extension.gif"], ["Cable Hips Adduction", "Cable-Hips-Adduction.gif"], ["Cable Incline Triceps Extension", "Cable-Incline-Triceps-Extension.gif"], ["Cable Internal Shoulder Rotation", "Cable-Internal-Shoulder-Rotation.gif"], ["Cable Kneeling Pull Through", "Cable-Kneeling-Pull-Through.gif"], ["Cable Lateral Raise", "Cable-Lateral-Raise.gif"], ["Cable Lunge", "Cable-Lunge.gif"], ["Cable Lying Triceps Extension", "Cable-Lying-Triceps-Extension.gif"], ["Cable Lying Triceps Extensions", "Cable-Lying-Triceps-Extensions.gif"], ["Cable One Arm High Pulley Overhead Tricep Extension", "Cable-One-Arm-High-Pulley-Overhead-Tricep-Extension.gif"], ["Cable One Arm Overhead Triceps Extension", "Cable-One-Arm-Overhead-Triceps-Extension.gif"], ["Cable One Arm Pulldown", "Cable-One-Arm-Pulldown.gif"], ["Cable One Arm Wrist Curl On Floor", "Cable-One-Arm-Wrist-Curl-On-Floor.gif"], ["cable preacher curls", "cable-preacher-curls.gif"], ["Cable Pull Through", "Cable-Pull-Through.gif"], ["Cable Pulldown Bicep Curl", "Cable-Pulldown-Bicep-Curl.gif"], ["cable rear delt fly", "cable-rear-delt-fly.gif"], ["Cable Rear Drive", "Cable-Rear-Drive.gif"], ["Cable Rear Pulldown", "Cable-Rear-Pulldown.gif"], ["Cable Reverse Grip EZ bar Biceps Curl", "Cable-Reverse-Grip-EZ-bar-Biceps-Curl.gif"], ["Cable Rope Lying on Floor Tricep Extension", "Cable-Rope-Lying-on-Floor-Tricep-Extension.gif"], ["Cable Rope Overhead Triceps Extension", "Cable-Rope-Overhead-Triceps-Extension.gif"], ["Cable Seated Cross Arm Twist", "Cable-Seated-Cross-Arm-Twist.gif"], ["Cable Seated Pullover", "Cable-Seated-Pullover.gif"], ["Cable Seated Twist on Floor", "Cable-Seated-Twist-on-Floor.gif"], ["Cable Shoulder Press", "Cable-Shoulder-Press.gif"], ["Cable Shrug", "Cable-Shrug.gif"], ["Cable Side Bend", "Cable-Side-Bend.gif"], ["Cable Side Triceps Extension", "Cable-Side-Triceps-Extension.gif"], ["Cable Squat", "Cable-Squat.gif"], ["Cable Straight Arm Pulldown", "Cable-Straight-Arm-Pulldown.gif"], ["Cable Tricep Kickback", "Cable-Tricep-Kickback.gif"], ["Cable Twisting Standing high Row", "Cable-Twisting-Standing-high-Row.gif"], ["Cable Two Arm Curl on Incline Bench", "Cable-Two-Arm-Curl-on-Incline-Bench.gif"], ["Cable Upper Chest Crossovers", "Cable-Upper-Chest-Crossovers.gif"], ["Cable Upright Row", "Cable-Upright-Row.gif"], ["Calf Raise with Resistance Band", "Calf-Raise-with-Resistance-Band.gif"], ["Calf Stretch with Rope", "Calf-Stretch-with-Rope.gif"], ["Calves Stretch Static Position", "Calves-Stretch-Static-Position.gif"], ["Captains Chair Leg Raise", "Captains-Chair-Leg-Raise.gif"], ["cat cow", "cat-cow.gif"], ["CHAIR DIPS", "CHAIR-DIPS.gif"], ["Chest and Front of Shoulder Stretch", "Chest-and-Front-of-Shoulder-Stretch.gif"], ["Chest Press Machine", "Chest-Press-Machine.gif"], ["Chest Supported Dumbbell Front Raises", "Chest-Supported-Dumbbell-Front-Raises.gif"], ["Chin Up", "Chin-Up.gif"], ["Chin Up (1)", "Chin-Up (1).gif"], ["Chin Up Around the Bar", "Chin-Up-Around-the-Bar.gif"], ["Clap Push Up", "Clap-Push-Up.gif"], ["close grip barbell curl", "close-grip-barbell-curl.gif"], ["Close Grip Bench Press", "Close-Grip-Bench-Press.gif"], ["close grip cable row", "close-grip-cable-row.gif"], ["Close Grip Chin Up", "Close-Grip-Chin-Up.gif"], ["Close Grip Dumbbell Press", "Close-Grip-Dumbbell-Press.gif"], ["Close grip Dumbbell Push Up", "Close-grip-Dumbbell-Push-Up.gif"], ["Close Grip Knee Push up", "Close-Grip-Knee-Push-up.gif"], ["Close Grip Lat Pulldown", "Close-Grip-Lat-Pulldown.gif"], ["Close Grip Z Bar Curl", "Close-Grip-Z-Bar-Curl.gif"], ["Cobra Push up", "Cobra-Push-up.gif"], ["commander pull up", "commander-pull-up.gif"], ["Concentration Curl", "Concentration-Curl.gif"], ["Corner Wall Stretch", "Corner-Wall-Stretch.gif"], ["Cossack Squat", "Cossack-Squat.gif"], ["Crab Twist Toe Touch", "Crab-Twist-Toe-Touch.gif"], ["Cross Arm Push up", "Cross-Arm-Push-up.gif"], ["Cross Body Mountain Climber", "Cross-Body-Mountain-Climber.gif"], ["Cross Body Push up Plyometric", "Cross-Body-Push-up_Plyometric.gif"], ["Cross Cable Face Pull", "Cross-Cable-Face-Pull.gif"], ["Cross Crunch", "Cross-Crunch.gif"], ["Crouching Heel Back Calf Stretch", "Crouching-Heel-Back-Calf-Stretch.gif"], ["Crunch", "Crunch.gif"], ["Crunch With Leg Raise", "Crunch-With-Leg-Raise.gif"], ["Curtsey Squat", "Curtsey-Squat.gif"], ["D NQ NP 968548 MLB50112954972 052022 O", "D_NQ_NP_968548-MLB50112954972_052022-O.jpg"], ["Dead Bug", "Dead-Bug.gif"], ["Dead Bug (1)", "Dead-Bug (1).gif"], ["Dead Bug (2)", "Dead-Bug (2).gif"], ["dead hang 360x360", "dead-hang-360x360.png"], ["Decline Barbell Bench Press", "Decline-Barbell-Bench-Press.gif"], ["Decline Bench Dumbbell Lunge", "Decline-Bench-Dumbbell-Lunge.gif"], ["Decline Chest Press Machine", "Decline-Chest-Press-Machine.gif"], ["Decline Close Grip Bench To Skull Crusher", "Decline-Close-Grip-Bench-To-Skull-Crusher.gif"], ["Decline Dumbbell Fly", "Decline-Dumbbell-Fly.gif"], ["Decline Dumbbell Leg Curl", "Decline-Dumbbell-Leg-Curl.gif"], ["Decline Dumbbell Triceps Extension", "Decline-Dumbbell-Triceps-Extension.gif"], ["Decline hammer press", "Decline-hammer-press.gif"], ["Decline Push Up", "Decline-Push-Up.gif"], ["Decline Sit up", "Decline-Sit-up.gif"], ["desenvolvimento em pe com elastico", "desenvolvimento-em-pe-com-elastico.gif"], ["Dhanurasana Rocking Bow Pose", "Dhanurasana-Rocking-Bow-Pose.gif"], ["Diagonal Neck Stretch 360x360", "Diagonal-Neck-Stretch-360x360.png"], ["Diamond Push up", "Diamond-Push-up.gif"], ["Dip Shrugs", "Dip-Shrugs.gif"], ["Dips Between Chairs", "Dips-Between-Chairs.gif"], ["Donkey Calf Raise", "Donkey-Calf-Raise.gif"], ["Donkey Kick on Leg Extension Machine", "Donkey-Kick-on-Leg-Extension-Machine.gif"], ["Donkey Kick on Smith Machine", "Donkey-Kick-on-Smith-Machine.gif"], ["Donkey Kicks", "Donkey-Kicks.gif"], ["Double Arm Dumbbell Curl", "Double-Arm-Dumbbell-Curl.gif"], ["Double Cable Front Raise", "Double-Cable-Front-Raise.gif"], ["Double Cable Neutral Grip Lat Pulldown On Floor", "Double-Cable-Neutral-Grip-Lat-Pulldown-On-Floor.gif"], ["Double Crunches", "Double-Crunches.gif"], ["Double Leg Stretch", "Double-Leg-Stretch.gif"], ["Down to Up Twist Gymstick", "Down-to-Up-Twist-Gymstick.gif"], ["Drop Push Up", "Drop-Push-Up.gif"], ["Duck Walk", "Duck-Walk.gif"], ["Dumbbell 4 Ways Lateral Raise", "Dumbbell-4-Ways-Lateral-Raise.gif"], ["Dumbbell 6 Ways Raise", "Dumbbell-6-Ways-Raise.gif"], ["Dumbbell Alternate Preacher Curl", "Dumbbell-Alternate-Preacher-Curl.gif"], ["dumbbell bench squat", "dumbbell-bench-squat.gif"], ["Dumbbell Bent Arm Laterl Raise", "Dumbbell-Bent-Arm-Laterl-Raise.gif"], ["Dumbbell Bent Over Reverse Row", "Dumbbell-Bent-Over-Reverse-Row.gif"], ["Dumbbell Bulgarian Split Squat", "Dumbbell-Bulgarian-Split-Squat.gif"], ["Dumbbell Burpees", "Dumbbell-Burpees.gif"], ["Dumbbell Calf Raise", "Dumbbell-Calf-Raise.gif"], ["Dumbbell Chest Supported Lateral Raises", "Dumbbell-Chest-Supported-Lateral-Raises.gif"], ["dumbbell cuban press", "dumbbell-cuban-press-.gif"], ["Dumbbell Curl", "Dumbbell-Curl.gif"], ["Dumbbell Curl On Arm Blaster", "Dumbbell-Curl-On-Arm-Blaster.gif"], ["Dumbbell Decline One Arm Hammer Press", "Dumbbell-Decline-One-Arm-Hammer-Press.gif"], ["Dumbbell Decline Shrug", "Dumbbell-Decline-Shrug.gif"], ["Dumbbell Devil Press", "Dumbbell-Devil-Press.gif"], ["Dumbbell Finger Curl", "Dumbbell-Finger-Curl.gif"], ["Dumbbell Fly", "Dumbbell-Fly.gif"], ["dumbbell forward leaning lunge", "dumbbell-forward-leaning-lunge.gif"], ["Dumbbell Front Raise", "Dumbbell-Front-Raise.gif"], ["Dumbbell Glute Bridge", "Dumbbell-Glute-Bridge.gif"], ["Dumbbell Goblet Curtsey Lunge", "Dumbbell-Goblet-Curtsey-Lunge.gif"], ["Dumbbell High Curl", "Dumbbell-High-Curl.gif"], ["Dumbbell Incline Shrug", "Dumbbell-Incline-Shrug.gif"], ["Dumbbell Incline T Raise", "Dumbbell-Incline-T-Raise.gif"], ["Dumbbell Incline Two Arm Extension", "Dumbbell-Incline-Two-Arm-Extension.gif"], ["Dumbbell Iron Cross", "Dumbbell-Iron-Cross.gif"], ["Dumbbell Jump Squat", "Dumbbell-Jump-Squat.gif"], ["Dumbbell Kickback", "Dumbbell-Kickback.gif"], ["Dumbbell Lateral Raise", "Dumbbell-Lateral-Raise.gif"], ["Dumbbell Lateral Step Up", "Dumbbell-Lateral-Step-Up.gif"], ["Dumbbell Lateral to Front Raise", "Dumbbell-Lateral-to-Front-Raise.gif"], ["Dumbbell Lunge", "Dumbbell-Lunge.gif"], ["Dumbbell Lying External Shoulder Rotation", "Dumbbell-Lying-External-Shoulder-Rotation.gif"], ["Dumbbell Lying One Arm Rear Lateral Raise", "Dumbbell-Lying-One-Arm-Rear-Lateral-Raise.gif"], ["Dumbbell Lying Rear Lateral Raise", "Dumbbell-Lying-Rear-Lateral-Raise.gif"], ["Dumbbell One Arm Reverse Grip Press", "Dumbbell-One-Arm-Reverse-Grip-Press.gif"], ["Dumbbell One Arm Shoulder Press", "Dumbbell-One-Arm-Shoulder-Press.gif"], ["Dumbbell Power Clean", "Dumbbell-Power-Clean.gif"], ["Dumbbell Preacher Curl", "Dumbbell-Preacher-Curl.gif"], ["Dumbbell Preacher Hammer Curl", "Dumbbell-Preacher-Hammer-Curl.gif"], ["Dumbbell Press", "Dumbbell-Press-1.gif"], ["Dumbbell Pull Through", "Dumbbell-Pull-Through.gif"], ["Dumbbell Pullover", "Dumbbell-Pullover.gif"], ["Dumbbell Pullover On Stability Ball", "Dumbbell-Pullover-On-Stability-Ball.gif"], ["Dumbbell Raise", "Dumbbell-Raise.gif"], ["Dumbbell Rear Delt Row", "Dumbbell-Rear-Delt-Row.gif"], ["Dumbbell Rear Lunge", "Dumbbell-Rear-Lunge.gif"], ["dumbbell renegade row", "Dumbbell-Renegade-Row.gif"], ["dumbbell reverse curl", "dumbbell-reverse-curl.gif"], ["Dumbbell Reverse Fly", "Dumbbell-Reverse-Fly.gif"], ["Dumbbell Reverse Grip 30 Degrees Incline Bench Press", "Dumbbell-Reverse-Grip-30-Degrees-Incline-Bench-Press.gif"], ["Dumbbell Romanian Deadlift", "Dumbbell-Romanian-Deadlift.gif"], ["Dumbbell Row", "Dumbbell-Row.gif"], ["Dumbbell Scaption", "Dumbbell-Scaption.gif"], ["dumbbell scot curl", "dumbbell-scot-curl.gif"], ["Dumbbell Scott Hammer Curl", "Dumbbell-Scott-Hammer-Curl.gif"], ["Dumbbell Seated Alternate Front Raises", "Dumbbell-Seated-Alternate-Front-Raises.gif"], ["Dumbbell Seated Bent Over Rear Delt Row", "Dumbbell-Seated-Bent-Over-Rear-Delt-Row.gif"], ["Dumbbell Seated Cuban Press", "Dumbbell-Seated-Cuban-Press.gif"], ["Dumbbell Seated Front and Back Tate Press", "Dumbbell-Seated-Front-and-Back-Tate-Press.gif"], ["Dumbbell Seated Neutral Wrist Curl", "Dumbbell-Seated-Neutral-Wrist-Curl.gif"], ["Dumbbell Shoulder Press", "Dumbbell-Shoulder-Press.gif"], ["Dumbbell Shrug", "Dumbbell-Shrug.gif"], ["Dumbbell Side Bend", "Dumbbell-Side-Bend.gif"], ["Dumbbell Side Lying Rear Delt Raise", "Dumbbell-Side-Lying-Rear-Delt-Raise.gif"], ["Dumbbell Single Arm Lateral Raise", "Dumbbell-Single-Arm-Lateral-Raise.gif"], ["Dumbbell Single Leg Deadlift", "Dumbbell-Single-Leg-Deadlift.gif"], ["Dumbbell Skull Crusher", "Dumbbell-Skull-Crusher.gif"], ["Dumbbell Split Jump", "Dumbbell-Split-Jump.gif"], ["Dumbbell Standing Palms In Press", "Dumbbell-Standing-Palms-In-Press.gif"], ["Dumbbell Straight Leg Deadlift", "Dumbbell-Straight-Leg-Deadlift.gif"], ["dumbbell sumo squat", "dumbbell-sumo-squat.gif"], ["Dumbbell Tate Press", "Dumbbell-Tate-Press.gif"], ["Dumbbell Triceps Extension", "Dumbbell-Triceps-Extension.gif"], ["Dumbbell Upright Row", "Dumbbell-Upright-Row.gif"], ["Dumbbell Upward Fly", "Dumbbell-Upward-Fly.gif"], ["Dumbbell V up", "Dumbbell-V-up.gif"], ["Dumbbell W Press", "Dumbbell-W-Press.gif"], ["Dumbbell Windmill", "Dumbbell-Windmill.gif"], ["Dumbbell Wrist Curl", "Dumbbell-Wrist-Curl.gif"], ["Dumbeel Step Up", "Dumbeel-Step-Up.gif"], ["Dumbell Pistol Squat", "Dumbell-Pistol-Squat.gif"], ["Dumbell reverse lunge", "Dumbell-reverse-lunge.gif"], ["Dynamic Chest Stretch", "Dynamic-Chest-Stretch.gif"], ["Elbow Reverse Push Up", "Elbow-Reverse-Push-Up.gif"], ["Elbow To Knee Twists", "Elbow-To-Knee-Twists.gif"], ["Elliptical Machine", "Elliptical-Machine.gif"], ["Exercise Ball Frog Crunch", "Exercise-Ball-Frog-Crunch.gif"], ["Exercise Ball Supine Triceps Extension", "Exercise-Ball-Supine-Triceps-Extension.gif"], ["Exercise Ball Wall Squat", "Exercise-Ball-Wall-Squat.gif"], ["extensao de perna em pe com elastico", "extensao-de-perna-em-pe-com-elastico.gif"], ["extensao de triceps acima da cabeca em pe com elastico", "extensao-de-triceps-acima-da-cabeca-em-pe-com-elastico.gif"], ["extensao de triceps em pe com elastico", "extensao-de-triceps-em-pe-com-elastico.gif"], ["EZ Bar Bent Arm Pullover", "EZ-Bar-Bent-Arm-Pullover.gif"], ["EZ Bar Lying Close Grip Triceps Extension Behind Head", "EZ-Bar-Lying-Close-Grip-Triceps-Extension-Behind-Head.gif"], ["EZ Bar Underhand Press", "EZ-Bar-Underhand-Press.gif"], ["EZ Barbell Incline Triceps Extension", "EZ-Barbell-Incline-Triceps-Extension.gif"], ["Face Pull", "Face-pull.gif"], ["Farmers walk Cardio", "Farmers-walk_Cardio.gif"], ["Fast Feet Run", "Fast-Feet-Run.gif"], ["Feet and Ankle Rotation", "Feet-and-Ankle-Rotation.gif"], ["Fire Hydrant", "Fire-Hydrant.gif"], ["Fish Pose Matsyasana", "Fish-Pose-Matsyasana.gif"], ["Flat Bench Hyperextension", "Flat-Bench-Hyperextension.gif"], ["flexao de perna sentado com elastico", "flexao-de-perna-sentado-com-elastico.gif"], ["Flexor Incline Dumbbell Curls", "Flexor-Incline-Dumbbell-Curls.gif"], ["Floor Crunch", "Floor-Crunch.gif"], ["Floor Hyperextension", "Floor-Hyperextension.gif"], ["Flutter Kicks", "Flutter-Kicks.gif"], ["Foam Roller Calves", "Foam-Roller-Calves.gif"], ["Foam Roller Chest Stretch", "Foam-Roller-Chest-Stretch.gif"], ["Foam Roller Glutes", "Foam-Roller-Glutes.gif"], ["Foam Roller Hamstrings", "Foam-Roller-Hamstrings.gif"], ["Foam Roller Inner Thigh Adductor Stretch", "Foam-Roller-Inner-Thigh-Adductor-Stretch.gif"], ["Foam Roller IT iliotibial Band Stretch", "Foam-Roller-IT-iliotibial-Band-Stretch.gif"], ["Foam Roller Lat Stretch", "Foam-Roller-Lat-Stretch.gif"], ["Foam Roller Plantar Fasciitis", "Foam-Roller-Plantar-Fasciitis.gif"], ["Foam Roller Posterior Shoulder", "Foam-Roller-Posterior-Shoulder.gif"], ["Foam Roller Quads", "Foam-Roller-Quads.gif"], ["Foam Roller Upper Back", "Foam-Roller-Upper-Back.gif"], ["Foot and Ankles Stretches", "Foot-and-Ankles-Stretches.gif"], ["Forearm Push up", "Forearm-Push-up.gif"], ["frog crunch", "frog-crunch.gif"], ["Frog Pump", "Frog-Pump.gif"], ["Front and Back Neck Stretch", "Front-and-Back-Neck-Stretch.gif"], ["Front Plank With Arm And Leg Lift", "Front-Plank-With-Arm-And-Leg-Lift.gif"], ["Front Plank with Arm Lift", "Front-Plank-with-Arm-Lift.gif"], ["Front Pulldown", "Front-Pulldown.gif"], ["front squat", "front-squat.gif"], ["Front to Side Plank", "Front-to-Side-Plank.gif"], ["Full Crunch Machine", "Full-Crunch-Machine.gif"], ["Full Range Of Motion Lat Pulldown", "Full-Range-Of-Motion-Lat-Pulldown.gif"], ["Glute Bridge", "Glute-Bridge-.gif"], ["Glute Bridge on Bench", "Glute-Bridge-on-Bench.gif"], ["Glute Bridge One Leg on Bench", "Glute-Bridge-One-Leg-on-Bench.gif"], ["Glute Kickback Machine", "Glute-Kickback-Machine.gif"], ["Good Morning With Resistance Band", "Good-Morning-With-Resistance-Band.gif"], ["Hack Machine One Leg Calf Raise", "Hack-Machine-One-Leg-Calf-Raise.gif"], ["Hack Squat Calf Raise", "Hack-Squat-Calf-Raise.gif"], ["Half Arnold Press", "Half-Arnold-Press.gif"], ["Half Cross Crunch", "Half-Cross-Crunch.gif"], ["Half Kneeling Cable External Rotation", "Half-Kneeling-Cable-External-Rotation.gif"], ["Half Kneeling High Cable Row Rope", "Half-Kneeling-High-Cable-Row-Rope.gif"], ["Half Kneeling Lat Pulldown", "Half-Kneeling-Lat-Pulldown.gif"], ["Half Kneeling One Arm Kettlebell Press", "Half-Kneeling-One-Arm-Kettlebell-Press.gif"], ["Half Wipers", "Half-Wipers.gif"], ["Hammer Curl", "Hammer-Curl.gif"], ["Hammer Curl with Resistance Band", "Hammer-Curl-with-Resistance-Band.gif"], ["Hammer Press", "Hammer-Press.gif"], ["Hamstrings Lying Stretch", "Hamstrings-Lying-Stretch.gif"], ["Hand Gripper", "Hand-Gripper.gif"], ["Hands Bike", "Hands-Bike.gif"], ["handstand push up", "handstand-push-up.gif"], ["Hanging Knee Raises", "Hanging-Knee-Raises.gif"], ["Hanging Leg Raises", "Hanging-Leg-Raises.gif"], ["Hanging Side Knee Raises", "Hanging-Side-Knee-Raises.gif"], ["Hanging Windshield Wiper", "Hanging-Windshield-Wiper.gif"], ["Hawaiian Squat exercise", "Hawaiian-Squat-exercise.gif"], ["Heel Touch", "Heel-Touch.gif"], ["Heel Touch (1)", "Heel-Touch (1).gif"], ["Hell Slide", "Hell-Slide.gif"], ["High Cable Crossover", "High-Cable-Crossover.gif"], ["High Cable Single Arm Bicep Curl", "High-Cable-Single-Arm-Bicep-Curl.gif"], ["High Chest Fly With Resistance Band", "High-Chest-Fly-With-Resistance-Band.gif"], ["High Knee Run", "High-Knee-Run.gif"], ["High Knee Skips Cardio", "High-Knee-Skips_Cardio.gif"], ["High Knee Squat", "High-Knee-Squat.gif"], ["High Knees against wall", "High-Knees-against-wall.gif"], ["High Pulley Overhead Tricep Extension", "High-Pulley-Overhead-Tricep-Extension.gif"], ["HiP ABDUCTION MACHINE", "HiP-ABDUCTION-MACHINE.gif"], ["HIP ADDUCTION MACHINE", "HIP-ADDUCTION-MACHINE.gif"], ["Hip Circles Stretch", "Hip-Circles-Stretch.gif"], ["Hip Extension On Bench", "Hip-Extension-On-Bench.gif"], ["Hip Thrust Machine", "Hip-Thrust-Machine.gif"], ["Hip Thrust on The Leg Extension Machine", "Hip-Thrust-on-The-Leg-Extension-Machine.gif"], ["HollowHold 360x360", "HollowHold-360x360.png"], ["Hook Kick Kickboxing with boxing bag", "Hook-Kick-Kickboxing-with-boxing-bag.gif"], ["how to do pull up", "how-to-do-pull-up.gif"], ["Human Flag", "Human-Flag.gif"], ["hyperextension", "hyperextension.gif"], ["hyperextension (1)", "hyperextension (1).gif"], ["Impossible Dips", "Impossible-Dips.gif"], ["Inchworm", "Inchworm.gif"], ["Incline Barbell Bench Press", "Incline-Barbell-Bench-Press.gif"], ["Incline Barbell Row", "Incline-Barbell-Row.gif"], ["Incline Cable Fly", "Incline-Cable-Fly.gif"], ["Incline Cable Row", "Incline-Cable-Row.gif"], ["Incline Chest Press Machine", "Incline-Chest-Press-Machine.gif"], ["Incline Close Grip Bench Press", "Incline-Close-Grip-Bench-Press.gif"], ["Incline Dumbbel Hammer Press", "Incline-Dumbbel-Hammer-Press.gif"], ["Incline Dumbbell Hammer Row", "Incline-Dumbbell-Hammer-Row.gif"], ["Incline Dumbbell Press", "Incline-Dumbbell-Press.gif"], ["Incline Dumbbell Row", "Incline-Dumbbell-Row.gif"], ["Incline Dumbbell Side Lateral Raise", "Incline-Dumbbell-Side-Lateral-Raise.gif"], ["Incline Dumbbell Y Raise", "Incline-Dumbbell-Y-Raise.gif"], ["Incline Front Raise", "Incline-Front-Raise.gif"], ["Incline Landmine Press", "Incline-Landmine-Press.gif"], ["Incline Leg Hip Raise", "Incline-Leg-Hip-Raise.gif"], ["Incline Push Up", "Incline-Push-Up.gif"], ["Incline Reverse Grip Dumbbell Row", "Incline-Reverse-Grip-Dumbbell-Row.gif"], ["Incline Treadmill", "Incline-Treadmill.gif"], ["Inner Chest Press Machine", "Inner-Chest-Press-Machine.gif"], ["INNER THIGH SIDE STRETCH", "INNER-THIGH-SIDE-STRETCH.gif"], ["Inverted Row", "Inverted-Row.gif"], ["Isometric Pull Up", "Isometric-Pull-Up.gif"], ["Jab Boxing", "Jab-Boxing.gif"], ["Jack Burpees", "Jack-Burpees.gif"], ["Jack knife sit up", "Jack-knife-sit-up.gif"], ["Jackknife Sit ups", "Jackknife-Sit-ups.gif"], ["jefferson squat", "jefferson-squat.gif"], ["Jump Rope", "Jump-Rope.gif"], ["Jump Squat", "Jump-Squat.gif"], ["Jumping jack", "Jumping-jack.gif"], ["jumping pull up", "jumping-pull-up.gif"], ["Kettlebell Arnold Press", "Kettlebell-Arnold-Press.gif"], ["Kettlebell Bent Over Row", "Kettlebell-Bent-Over-Row.gif"], ["Kettlebell Chest Press on the Floor", "Kettlebell-Chest-Press-on-the-Floor.gif"], ["Kettlebell Clean and Jerk", "Kettlebell-Clean-and-Jerk.gif"], ["kettlebell deadlift", "kettlebell-deadlift.gif"], ["Kettlebell Figure", "Kettlebell-Figure-8.gif"], ["Kettlebell Figure 8", "Kettlebell-Figure-8-1.gif"], ["Kettlebell front squat", "Kettlebell-front-squat.gif"], ["kettlebell goblet squat", "kettlebell-goblet-squat.gif"], ["Kettlebell Hang Clean", "Kettlebell-Hang-Clean.gif"], ["Kettlebell Lateral Raise", "Kettlebell-Lateral-Raise.gif"], ["Kettlebell Pistol Squats", "Kettlebell-Pistol-Squats.gif"], ["Kettlebell Renegade Row", "Kettlebell-Renegade-Row.gif"], ["Kettlebell Shoulder Press", "Kettlebell-Shoulder-Press.gif"], ["Kettlebell Single Leg Deadlift", "Kettlebell-Single-Leg-Deadlift.gif"], ["Kettlebell Split Snatch", "Kettlebell-Split-Snatch.gif"], ["Kettlebell Swings", "Kettlebell-Swings.gif"], ["Kettlebell Thruster", "Kettlebell-Thruster.gif"], ["Kettlebell Windmill", "Kettlebell-Windmill.gif"], ["Knee Circles", "Knee-Circles.gif"], ["Knee Push Up", "Knee-Push-Up.gif"], ["Kneeling Back Rotation Stretch", "Kneeling-Back-Rotation-Stretch.gif"], ["Kneeling Cable Crunch", "Kneeling-Cable-Crunch.gif"], ["Kneeling Cable Extension", "Kneeling-Cable-Extension.gif"], ["Kneeling Cable Shoulder Press", "Kneeling-Cable-Shoulder-Press.gif"], ["Kneeling Cable Triceps Extension", "Kneeling-Cable-Triceps-Extension.gif"], ["Kneeling High Pulley Row", "Kneeling-High-Pulley-Row.gif"], ["Kneeling Hip Flexor Stretch", "Kneeling-Hip-Flexor-Stretch.gif"], ["Kneeling Hip Flexor Stretch 1 360x360", "Kneeling-Hip-Flexor-Stretch-1-360x360.png"], ["Kneeling Incline Press Gymstick", "Kneeling-Incline-Press-Gymstick.gif"], ["Kneeling Jump Squat", "Kneeling-Jump-Squat.gif"], ["Kneeling Neck Stretch", "Kneeling-Neck-Stretch.gif"], ["Kneeling pulldown", "Kneeling-pulldown.gif"], ["Kneeling Quad Stretch", "Kneeling-Quad-Stretch.gif"], ["Kneeling Single Arm High Pulley Row", "Kneeling-Single-Arm-High-Pulley-Row.gif"], ["Kneeling Single Leg Kick", "Kneeling-Single-Leg-Kick.gif"], ["Kneeling T spine Rotation", "Kneeling-T-spine-Rotation.gif"], ["Korean Dips", "Korean-Dips.gif"], ["L Sit", "L-Sit.gif"], ["Landmine Deadlift", "Landmine-Deadlift.gif"], ["Landmine Floor Chest Fly", "Landmine-Floor-Chest-Fly.gif"], ["Landmine Lateral Raise", "Landmine-Lateral-Raise.gif"], ["Landmine Lunge", "Landmine-Lunge.gif"], ["Landmine Press", "Landmine-Press.gif"], ["Landmine Squat", "Landmine-Squat.gif"], ["Landmine Twist", "Landmine-Twist.gif"], ["Landmine Twist (1)", "Landmine-Twist (1).gif"], ["Lat Pulldown", "Lat-Pulldown.gif"], ["Lateral Raise Machine", "Lateral-Raise-Machine.gif"], ["Lateral Speed Step", "Lateral-Speed-Step.gif"], ["Lateral Step up", "Lateral-Step-up.gif"], ["Leaning Cable Lateral Raise", "Leaning-Cable-Lateral-Raise.gif"], ["Leaning Single Arm Dumbbell Lateral Raise", "Leaning-Single-Arm-Dumbbell-Lateral-Raise.gif"], ["Leg Curl", "Leg-Curl.gif"], ["leg curl on stability ball", "leg-curl-on-stability-ball.gif"], ["LEG EXTENSION", "LEG-EXTENSION.gif"], ["Leg Press", "Leg-Press.gif"], ["Leg Press Calf Raise", "Leg-Press-Calf-Raise.gif"], ["Leg Pull In Knee up", "Leg-Pull-In-Knee-up.gif"], ["Leg Pull In Knee ups", "Leg-Pull-In-Knee-ups.gif"], ["Leg Raise Dragon Flag", "Leg-Raise-Dragon-Flag.gif"], ["Lever Assisted Leg Press", "Lever-Assisted-Leg-Press.gif"], ["Lever Biceps Curl", "Lever-Biceps-Curl.gif"], ["Lever Cable Rear Pulldown", "Lever-Cable-Rear-Pulldown.gif"], ["Lever Chest Press", "Lever-Chest-Press.gif"], ["Lever Crossovers", "Lever-Crossovers.gif"], ["Lever Deadlift", "Lever-Deadlift.gif"], ["Lever Decline Chest Press", "Lever-Decline-Chest-Press.gif"], ["Lever Donkey Calf Raise", "Lever-Donkey-Calf-Raise.gif"], ["Lever Gripless Shrug", "Lever-Gripless-Shrug.gif"], ["Lever Horizontal Leg Press", "Lever-Horizontal-Leg-Press.gif"], ["Lever Incline Hammer Chest Press", "Lever-Incline-Hammer-Chest-Press.gif"], ["Lever Kneeling Leg Curl", "Lever-Kneeling-Leg-Curl-.gif"], ["Lever Lateral Raise", "Lever-Lateral-Raise.gif"], ["Lever Lying Crunch", "Lever-Lying-Crunch.gif"], ["Lever One Arm Chest Press", "Lever-One-Arm-Chest-Press.gif"], ["Lever Overhand Triceps Dip", "Lever-Overhand-Triceps-Dip.gif"], ["Lever Preacher Curl", "Lever-Preacher-Curl.gif"], ["Lever Pullover plate loaded", "Lever-Pullover-plate-loaded.gif"], ["Lever Reverse Shoulder Press", "Lever-Reverse-Shoulder-Press.gif"], ["Lever Reverse T Bar Row", "Lever-Reverse-T-Bar-Row.gif"], ["Lever Seated Calf Raise", "Lever-Seated-Calf-Raise.gif"], ["Lever Seated Twist", "Lever-Seated-Twist.gif"], ["Lever Shoulder Press", "Lever-Shoulder-Press.gif"], ["Lever Shoulder Press Hammer Grip", "Lever-Shoulder-Press-Hammer-Grip.gif"], ["Lever Side Hip Abduction", "Lever-Side-Hip-Abduction.gif"], ["Lever Side Hip Adduction", "Lever-Side-Hip-Adduction.gif"], ["Lever Single Leg Curl", "Lever-Single-Leg-Curl.gif"], ["Lever Standing Hip Extension", "Lever-Standing-Hip-Extension.gif"], ["Lever Standing Leg Raise", "Lever-Standing-Leg-Raise.gif"], ["Lever Standing Rear Kick", "Lever-Standing-Rear-Kick.gif"], ["Lever T bar Row", "Lever-T-bar-Row.gif"], ["Lever Tricep Extension", "Lever-Tricep-Extension.gif"], ["Locust Yoga Pose", "Locust-Yoga-Pose.png"], ["Log Lift", "Log-Lift.gif"], ["Long Arm Crunch", "Long-Arm-Crunch.gif"], ["Long Jump Plyometrics", "Long-Jump-Plyometrics.gif"], ["Low Cable Tricep Kickback", "Low-Cable-Tricep-Kickback.gif"], ["Low fly", "Low-fly.gif"], ["Lunging Straight Leg Calf Stretch", "Lunging-Straight-Leg-Calf-Stretch.gif"], ["Lying Alternate Leg Press", "Lying-Alternate-Leg-Press.gif"], ["lying cable curl", "lying-cable-curl.gif"], ["Lying Cable Fly", "Lying-Cable-Fly.gif"], ["Lying Cable Reverse Fly", "Lying-Cable-Reverse-Fly.gif"], ["Lying Dumbbell Leg Curl", "Lying-Dumbbell-Leg-Curl.gif"], ["Lying Extension Pullover", "Lying-Extension-Pullover.gif"], ["Lying glute stretch", "Lying-glute-stretch.gif"], ["Lying High Bench Barbell Curl", "Lying-High-Bench-Barbell-Curl.gif"], ["Lying Knee Raise", "Lying-Knee-Raise.gif"], ["Lying leg and hip raise", "Lying-leg-and-hip-raise.gif"], ["Lying leg curl", "Lying-leg-curl.gif"], ["Lying Leg Raise", "Lying-Leg-Raise.gif"], ["Lying Leg Raise (1)", "Lying-Leg-Raise (1).gif"], ["Lying Scissor Kick", "Lying-Scissor-Kick.gif"], ["Lying Shoulder Press", "Lying-Shoulder-Press.gif"], ["Lying Upper Body Rotation", "Lying-Upper-Body-Rotation.gif"], ["Lying Upper Body Rotation (1)", "Lying-Upper-Body-Rotation (1).gif"], ["Lying Weighted Neck Flexion", "Lying-Weighted-Neck-Flexion.gif"], ["Medicine Ball Crunch", "Medicine-Ball-Crunch.gif"], ["Medicine ball Overhead Slam exercise", "Medicine-ball-Overhead-Slam-exercise.gif"], ["Medicine Ball Push Up", "Medicine-Ball-Push-Up.gif"], ["Middle fly", "Middle-fly.gif"], ["Middle fly (1)", "Middle-fly (1).gif"], ["Modified Hindu Push up", "Modified-Hindu-Push-up.gif"], ["Mountain climber", "Mountain-climber.gif"], ["Mountain climber (1)", "Mountain-climber (1).gif"], ["Muscle up vertical bar", "Muscle-up-vertical-bar.gif"], ["Narrow Grip Wall Push Up", "Narrow-Grip-Wall-Push-Up.gif"], ["neutral grip pull up", "neutral-grip-pull-up.gif"], ["Nordic Hamstring Curl", "Nordic-Hamstring-Curl.gif"], ["Oblique Floor Crunches", "Oblique-Floor-Crunches.gif"], ["One Arm Barbell Row", "One-Arm-Barbell-Row-.gif"], ["One Arm Bent Over Cable Lateral Raise", "One-Arm-Bent-Over-Cable-Lateral-Raise.gif"], ["One Arm Biceps Curl", "One-Arm-Biceps-Curl.gif"], ["One Arm Cable Bicep Curl", "One-Arm-Cable-Bicep-Curl.gif"], ["One Arm Cable Curl", "One-Arm-Cable-Curl.gif"], ["One arm Cable Row", "One-arm-Cable-Row.gif"], ["One Arm Chin Up", "One-Arm-Chin-Up.gif"], ["One Arm Decline Cable Fly", "One-Arm-Decline-Cable-Fly.gif"], ["One Arm Dumbbell Snatch", "One-Arm-Dumbbell-Snatch.gif"], ["One Arm Kettlebell Chest Press on the Bench", "One-Arm-Kettlebell-Chest-Press-on-the-Bench.gif"], ["One Arm Kettlebell Snatch exercise", "One-Arm-Kettlebell-Snatch-exercise.gif"], ["One Arm Kettlebell Swing", "One-Arm-Kettlebell-Swing.gif"], ["One Arm Landmine Row", "One-Arm-Landmine-Row.gif"], ["One Arm Lying Triceps Extension", "One-Arm-Lying-Triceps-Extension.gif"], ["One Arm Pronated Dumbbell Triceps Extension", "One-Arm-Pronated-Dumbbell-Triceps-Extension-.gif"], ["One Arm Prone Dumbbell Curl", "One-Arm-Prone-Dumbbell-Curl.gif"], ["One Arm Push Ups With Support", "One-Arm-Push-Ups-With-Support.gif"], ["One Arm Reverse Push Down", "One-Arm-Reverse-Push-Down.gif"], ["One arm triceps pushdown", "One-arm-triceps-pushdown.gif"], ["overhead cable curl", "overhead-cable-curl.gif"], ["overhead shrug", "overhead-shrug.gif"], ["overhead squat", "overhead-squat.gif"], ["Overhead Triceps Extension", "Overhead-Triceps-Extension.gif"], ["parallel bar dip", "parallel-bar-dip.gif"], ["Pec Deck Fly", "Pec-Deck-Fly.gif"], ["Pelvic Tilt", "Pelvic-Tilt.gif"], ["Pendulum Squat", "Pendulum-Squat.gif"], ["Pike Push up", "Pike-Push-up.gif"], ["Pike to Cobra", "Pike-to-Cobra.gif"], ["Piriformis Stretch", "Piriformis-Stretch.gif"], ["Pistol Squat", "Pistol-Squat.gif"], ["Pistol Squat to Box", "Pistol-Squat-to-Box.gif"], ["Planche Push Up", "Planche-Push-Up.gif"], ["plank", "plank.gif"], ["plank (1)", "plank (1).gif"], ["Plank Jacks Extended Leg", "Plank-Jacks-Extended-Leg.gif"], ["PLANK KNEE TO ELBOW", "PLANK-KNEE-TO-ELBOW.gif"], ["Plank Leg Lift", "Plank-Leg-Lift.gif"], ["Plank with Arm and Leg Lift", "Plank-with-Arm-and-Leg-Lift.gif"], ["Plate Loaded Seated Row", "Plate-Loaded-Seated-Row.gif"], ["Plate Loaded Shoulder Press", "Plate-Loaded-Shoulder-Press.gif"], ["Plyo Jacks", "Plyo-Jacks.gif"], ["ponte para os gluteos com elastico nas pernas", "ponte-para-os-gluteos-com-elastico-nas-pernas.gif"], ["Posterior Tibialis Stretch", "Posterior-Tibialis-Stretch.gif"], ["Power Clean", "Power-Clean-.gif"], ["Power Skips", "Power-Skips.gif"], ["Prone Abdominal Hollowing", "Prone-Abdominal-Hollowing.png"], ["Prone Abdominal Hollowing (1)", "Prone-Abdominal-Hollowing (1).png"], ["Prone Abdominal Hollowing 360x360", "Prone-Abdominal-Hollowing-360x360.png"], ["Prone Cervical Extension", "Prone-Cervical-Extension.gif"], ["Prone Incline Biceps Curl", "Prone-Incline-Biceps-Curl.gif"], ["proper form pull up", "proper-form-pull-up.gif"], ["Pull through Hips", "Pull-through-Hips.gif"], ["Pull up", "Pull-up.gif"], ["Punches", "Punches.gif"], ["push press", "push-press-1.gif"], ["push press 1", "push-press-1-1.gif"], ["Push Up", "Push-Up.gif"], ["Push Up Medicine Ball", "Push-Up-Medicine-Ball.gif"], ["Push Up Plus", "Push-Up-Plus.gif"], ["Push Up to Renegade Row", "Push-Up-to-Renegade-Row.gif"], ["Push up Toe Touch", "Push-up-Toe-Touch.gif"], ["Push up With Push up Bars", "Push-up-With-Push-up-Bars.gif"], ["Pushdown", "Pushdown.gif"], ["Quarter Sit up", "Quarter-Sit-up.gif"], ["Rear Delt Machine Flys", "Rear-Delt-Machine-Flys.gif"], ["Rear Drive", "Rear-Drive.gif"], ["Recumbent Exercise Bike", "Recumbent-Exercise-Bike.gif"], ["remada de costas com elastico em pe com torso curvado", "remada-de-costas-com-elastico-em-pe-com-torso-curvado.gif"], ["Resistance Band Alternating Chest Fly", "Resistance-Band-Alternating-Chest-Fly.gif"], ["Resistance Band Bicycle Crunch", "Resistance-Band-Bicycle-Crunch.gif"], ["Resistance Band Foot External Rotation", "Resistance-Band-Foot-External-Rotation.gif"], ["Resistance Band Hip Thrust", "Resistance-Band-Hip-Thrust.gif"], ["Resistance Band Hip Thrusts on Knees", "Resistance-Band-Hip-Thrusts-on-Knees.gif"], ["Resistance Band Lateral Walk", "Resistance-Band-Lateral-Walk.gif"], ["Resistance Band Reverse Hyperextension", "Resistance-Band-Reverse-Hyperextension.gif"], ["Resistance Band Seated Shoulder Press", "Resistance-Band-Seated-Shoulder-Press.gif"], ["Resistance Band Toe Touch", "Resistance-Band-Toe-Touch.gif"], ["Reverse Crunch", "Reverse-Crunch-1.gif"], ["Reverse Crunch 1", "Reverse-Crunch-1-1.gif"], ["Reverse Dips", "Reverse-Dips.gif"], ["Reverse Grip Barbell Row", "Reverse-Grip-Barbell-Row.gif"], ["Reverse Grip Dumbbell Bench Press", "Reverse-Grip-Dumbbell-Bench-Press.gif"], ["Reverse Grip EZ Bar Curl", "Reverse-Grip-EZ-Bar-Curl.gif"], ["Reverse grip Pull up", "Reverse-grip-Pull-up.gif"], ["Reverse Grip Pushdown", "Reverse-Grip-Pushdown.gif"], ["Reverse Hack Squat", "Reverse-Hack-Squat.gif"], ["Reverse Hyperextension Machine", "Reverse-Hyperextension-Machine.gif"], ["Reverse Hyperextensions", "Reverse-Hyperextensions.gif"], ["Reverse Lat Pulldown", "Reverse-Lat-Pulldown.gif"], ["Reverse Lunge Knee", "Reverse-Lunge-Knee.gif"], ["Reverse plank", "Reverse-plank.gif"], ["Reverse Plank Kicks", "Reverse-Plank-Kicks.gif"], ["Reverse Push up", "Reverse-Push-up.gif"], ["Reverse Shoulder Stretch", "Reverse-Shoulder-Stretch.gif"], ["Reverse Wrist Curl", "Reverse-Wrist-Curl.gif"], ["Riding Outdoor Bicycle", "Riding-Outdoor-Bicycle.gif"], ["Right Cross Boxing", "Right-Cross-Boxing.gif"], ["Right Uppercut Boxing", "Right-Uppercut-Boxing.gif"], ["Ring Dips", "Ring-Dips.gif"], ["Ring Inverted Row", "Ring-Inverted-Row.gif"], ["Roll Front Shoulder and Chest Lying on Floor", "Roll-Front-Shoulder-and-Chest-Lying-on-Floor.gif"], ["Roll Rhomboids", "Roll-Rhomboids.gif"], ["Roll Upper Back", "Roll-Upper-Back.gif"], ["Rolling Like a Ball crab", "Rolling-Like-a-Ball-crab.gif"], ["rope bicep curls", "rope-bicep-curls.gif"], ["Rope Climb", "Rope-Climb.gif"], ["Rope Pushdown", "Rope-Pushdown.gif"], ["Rope Straight Arm Pulldown", "Rope-Straight-Arm-Pulldown.gif"], ["rosca biceps alternada em pe com elastico", "rosca-biceps-alternada-em-pe-com-elastico.gif"], ["rosca biceps sentado com elastico", "rosca-biceps-sentado-com-elastico.gif"], ["Rotating Neck Stretch", "Rotating-Neck-Stretch.gif"], ["Rotator Cuff Stretch", "Rotator-Cuff-Stretch.gif"], ["Rowing Machine", "Rowing-Machine.gif"], ["Run", "Run.gif"], ["Run in Place", "Run-in-Place.gif"], ["Run in Place exercise", "Run-in-Place-exercise.gif"], ["Russian Twist", "Russian-Twist.gif"], ["russian twist mit partner", "russian-twist-mit-partner.gif"], ["Scapula Dips", "Scapula-Dips.gif"], ["Scapula Pull up", "Scapula-Pull-up.gif"], ["Scapular Protraction and Retraction", "Scapular-Protraction-and-Retraction.gif"], ["scott press", "scott-press.gif"], ["Seated Ab Crunch Machine", "Seated-Ab-Crunch-Machine.gif"], ["Seated Adductor Groin Stretch", "Seated-Adductor-Groin-Stretch.gif"], ["seated back extension", "seated-back-extension.gif"], ["Seated Ballerina", "Seated-Ballerina.gif"], ["Seated Banded Leg Extension", "Seated-Banded-Leg-Extension.gif"], ["Seated Behind the Neck Press", "Seated-Behind-the-Neck-Press.gif"], ["Seated Bench Leg Pull in", "Seated-Bench-Leg-Pull-in.gif"], ["Seated Bicep Curl With Resistance Band", "Seated-Bicep-Curl-With-Resistance-Band.gif"], ["Seated Bicep Curl With Resistance Band (1)", "Seated-Bicep-Curl-With-Resistance-Band (1).gif"], ["seated biceps curl", "seated-biceps-curl.gif"], ["Seated Cable Chest Press", "Seated-Cable-Chest-Press.gif"], ["Seated Cable Close Grip Chest Press", "Seated-Cable-Close-Grip-Chest-Press.gif"], ["Seated Cable Rope Row", "Seated-Cable-Rope-Row.gif"], ["Seated Cable Row", "Seated-Cable-Row.gif"], ["Seated Cable Twist", "Seated-Cable-Twist.gif"], ["Seated Calf Press on Leg Press Machine", "Seated-Calf-Press-on-Leg-Press-Machine.gif"], ["Seated Chest Stretch", "Seated-Chest-Stretch.gif"], ["Seated close grip concentration curl", "Seated-close-grip-concentration-curl.gif"], ["Seated Crunch Machine", "Seated-Crunch-Machine.gif"], ["Seated dumbbell alternating curl", "Seated-dumbbell-alternating-curl.gif"], ["seated dumbbell front raise", "seated-dumbbell-front-raise.gif"], ["Seated Dumbbell Lateral Raise", "Seated-Dumbbell-Lateral-Raise.gif"], ["Seated Dumbbell Triceps Extension", "Seated-Dumbbell-Triceps-Extension.gif"], ["Seated EZ Bar Overhead Triceps Extension", "Seated-EZ-Bar-Overhead-Triceps-Extension.gif"], ["Seated Flutter Kick", "Seated-Flutter-Kick.gif"], ["Seated Hammer Curl", "Seated-Hammer-Curl.gif"], ["Seated Hamstring Stretch", "Seated-Hamstring-Stretch.gif"], ["Seated Incline Dumbbell Curl", "Seated-Incline-Dumbbell-Curl.gif"], ["Seated Leg Curl", "Seated-Leg-Curl.gif"], ["Seated Leg Extension with Resistance Band", "Seated-Leg-Extension-with-Resistance-Band.gif"], ["Seated Oblique Twist", "Seated-Oblique-Twist.gif"], ["Seated One Arm Dumbbell Triceps Extension", "Seated-One-Arm-Dumbbell-Triceps-Extension.gif"], ["Seated Rear Lateral Dumbbell Raise", "Seated-Rear-Lateral-Dumbbell-Raise.gif"], ["Seated Row Machine", "Seated-Row-Machine.gif"], ["Seated Scapular Retraction Exercise", "Seated-Scapular-Retraction-Exercise.gif"], ["Seated Side Crunches", "Seated-Side-Crunches.gif"], ["Seated Straight Leg Calf Stretch", "Seated-Straight-Leg-Calf-Stretch.gif"], ["Seated Toe Touches", "Seated-Toe-Touches.gif"], ["Seated twist", "Seated-twist.gif"], ["Serratus Wall Slide With Foam Roller", "Serratus-Wall-Slide-With-Foam-Roller.gif"], ["Short Stride Run", "Short-Stride-Run.gif"], ["shotgun row", "shotgun-row.gif"], ["Shoulder Stretch Behind Back", "Shoulder-Stretch-Behind-Back.gif"], ["Shoulder Tap Push up", "Shoulder-Tap-Push-up.gif"], ["Side bend", "Side-bend.gif"], ["Side Bend Press", "Side-Bend-Press.gif"], ["Side Bridge", "Side-Bridge.gif"], ["Side Bridge Hip Abduction", "Side-Bridge-Hip-Abduction.gif"], ["Side Hip Abduction", "Side-Hip-Abduction.gif"], ["Side Lunge Stretch", "Side-Lunge-Stretch.gif"], ["Side Lying Clam", "Side-Lying-Clam.gif"], ["Side Lying Feet Raise", "Side-Lying-Feet-Raise.gif"], ["Side Lying Hip Adduction", "Side-Lying-Hip-Adduction.gif"], ["Side Lying Rear Delt Dumbbell Raise", "Side-Lying-Rear-Delt-Dumbbell-Raise.gif"], ["Side Neck Stretch", "Side-Neck-Stretch.gif"], ["Side One Arm Reverse Pushdown", "Side-One-Arm-Reverse-Pushdown.gif"], ["Side Plank", "Side-Plank-1.png"], ["Side Plank 1 360x360", "Side-Plank-1-360x360.png"], ["Side Plank Knee to Elbow", "Side-Plank-Knee-to-Elbow-.gif"], ["Side Plank Leg Raises", "Side-Plank-Leg-Raises.gif"], ["Side Plank Oblique Crunch", "Side-Plank-Oblique-Crunch.gif"], ["Side Push Neck Stretch", "Side-Push-Neck-Stretch.gif"], ["Side Shuttle", "Side-Shuttle.gif"], ["Single Arm Circles", "Single-Arm-Circles.gif"], ["Single Arm Push up", "Single-Arm-Push-up.gif"], ["Single Arm Push Up on Medicine Ball", "Single-Arm-Push-Up-on-Medicine-Ball.gif"], ["Single Arm Raise Push up", "Single-Arm-Raise-Push-up.gif"], ["Single Arm Reverse Grip Cable Bicep Curl", "Single-Arm-Reverse-Grip-Cable-Bicep-Curl.gif"], ["Single Arm Twisting Seated Cable Row", "Single-Arm-Twisting-Seated-Cable-Row.gif"], ["Single Calf Raise on Leg Press Machine", "Single-Calf-Raise-on-Leg-Press-Machine.gif"], ["Single Dumbbell Close grip Press", "Single-Dumbbell-Close-grip-Press.gif"], ["Single Dumbbell Spider Hammer Curl", "Single-Dumbbell-Spider-Hammer-Curl.gif"], ["Single Heel Drop Calf Stretch", "Single-Heel-Drop-Calf-Stretch.gif"], ["Single Knee To Chest Stretch", "Single-Knee-To-Chest-Stretch.gif"], ["Single Leg Bridge", "Single-Leg-Bridge.gif"], ["Single Leg Broad Jump", "Single-Leg-Broad-Jump.gif"], ["Single Leg Calf Raises", "Single-Leg-Calf-Raises.gif"], ["Single Leg Calves Stretch", "Single-Leg-Calves-Stretch.gif"], ["Single Leg Donkey Calf Raise", "Single-Leg-Donkey-Calf-Raise.gif"], ["Single Leg Extension", "Single-Leg-Extension.gif"], ["Single Leg Hip Thrust Jump", "Single-Leg-Hip-Thrust-Jump.gif"], ["Single Leg Press", "Single-Leg-Press.gif"], ["Single Leg Reverse Hyperextension", "Single-Leg-Reverse-Hyperextension.gif"], ["Single Leg Step Down", "Single-Leg-Step-Down.gif"], ["Single stiff leg deadlift", "Single-stiff-leg-deadlift.gif"], ["sissy squat", "sissy-squat.gif"], ["Sit ups", "Sit-ups.gif"], ["Sitting Rotation Hip Stretch", "Sitting-Rotation-Hip-Stretch.gif"], ["Sitting Wide Leg Adductor Stretch", "Sitting-Wide-Leg-Adductor-Stretch.gif"], ["Skater", "Skater.gif"], ["Skater Squat", "Skater-Squat.gif"], ["Ski Ergometer", "Ski-Ergometer.gif"], ["Ski Step", "Ski-Step.gif"], ["Skier Gymstick", "Skier-Gymstick.gif"], ["Sled Hack Squat", "Sled-Hack-Squat.gif"], ["Smith Machine Behind Neck Press", "Smith-Machine-Behind-Neck-Press.gif"], ["Smith Machine Bent Over Row", "Smith-Machine-Bent-Over-Row.gif"], ["Smith Machine Decline Bench Press", "Smith-Machine-Decline-Bench-Press.gif"], ["Smith Machine Good Morning", "Smith-Machine-Good-Morning.gif"], ["Smith Machine Hip Thrust", "Smith-Machine-Hip-Thrust.gif"], ["Smith Machine Leg Press", "Smith-Machine-Leg-Press.gif"], ["Smith Machine Lunge", "Smith-Machine-Lunge.gif"], ["Smith Machine Reverse Kickback", "Smith-Machine-Reverse-Kickback.gif"], ["Smith Machine Shoulder Press", "Smith-Machine-Shoulder-Press.gif"], ["smith machine shrug", "smith-machine-shrug.gif"], ["SNAP JUMPS", "SNAP-JUMPS.gif"], ["Sphinx Stretch", "Sphinx-Stretch.gif"], ["Spider Plank", "Spider-Plank.gif"], ["Split Jacks", "Split-Jacks.gif"], ["Split Squat", "Split-Squat.gif"], ["Split Squat Gymstick", "Split-Squat-Gymstick.gif"], ["Squat Gymstick", "Squat-Gymstick.gif"], ["Squat Hold Calf Raise", "Squat-Hold-Calf-Raise.gif"], ["Squat mobility Complex", "Squat-mobility-Complex.gif"], ["Squat on The Abductor Machine", "Squat-on-The-Abductor-Machine.gif"], ["Squat Tuck Jump", "Squat-Tuck-Jump.gif"], ["stability ball decline push ups", "stability-ball-decline-push-ups.gif"], ["Stability Ball Knee Tuck", "Stability-Ball-Knee-Tuck.gif"], ["stability ball push up", "stability-ball-push-up.gif"], ["Standing Alternating Dumbbell Shoulder Press", "Standing-Alternating-Dumbbell-Shoulder-Press.gif"], ["Standing Barbell Calf Raise", "Standing-Barbell-Calf-Raise.gif"], ["Standing Barbell Close Grip Military Press", "Standing-Barbell-Close-Grip-Military-Press.gif"], ["Standing Barbell Rollout", "Standing-Barbell-Rollout.gif"], ["Standing Barbell Triceps Extension", "Standing-Barbell-Triceps-Extension.gif"], ["Standing Behind Head Military Press", "Standing-Behind-Head-Military-Press.gif"], ["Standing Cable Crunch", "Standing-Cable-Crunch.gif"], ["Standing Cable High To Low Twist", "Standing-Cable-High-To-Low-Twist.gif"], ["Standing Cable low to high Twist", "Standing-Cable-low-to-high-Twist.gif"], ["standing cable twist", "standing-cable-twist.gif"], ["Standing Calf Raise", "Standing-Calf-Raise.gif"], ["Standing Cross Leg Hamstring Stretch", "Standing-Cross-Leg-Hamstring-Stretch.gif"], ["Standing Dorsiflexion", "Standing-Dorsiflexion.gif"], ["Standing Gastrocnemius Calf Stretch", "Standing-Gastrocnemius-Calf-Stretch.gif"], ["Standing Hamstring Stretch", "Standing-Hamstring-Stretch.gif"], ["Standing Hip Abduction", "Standing-Hip-Abduction-1.gif"], ["Standing Hip Extension", "Standing-Hip-Extension.gif"], ["Standing incline chest press", "Standing-incline-chest-press.gif"], ["STANDING KNEE HUGS", "STANDING-KNEE-HUGS.gif"], ["Standing leg curl", "Standing-leg-curl.gif"], ["Standing leg extension", "Standing-leg-extension.gif"], ["Standing Leg Raise", "Standing-Leg-Raise.gif"], ["Standing one arm chest stretch", "Standing-one-arm-chest-stretch.gif"], ["Standing Quadriceps Stretch", "Standing-Quadriceps-Stretch.gif"], ["Standing Reach Up Back rotation Stretch", "Standing-Reach-Up-Back-rotation-Stretch.gif"], ["Standing Reverse Shoulder Stretch", "Standing-Reverse-Shoulder-Stretch.gif"], ["Standing Rotation", "Standing-Rotation.gif"], ["standing side bend", "Standing-Side-Bend.gif"], ["Standing Side Bend Stretch", "Standing-Side-Bend-Stretch.gif"], ["Standing Side Toe Touching", "Standing-Side-Toe-Touching.gif"], ["Standing Single Arm Upright Row", "Standing-Single-Arm-Upright-Row.gif"], ["Standing Single Leg Curl Machine", "Standing-Single-Leg-Curl-Machine.gif"], ["Standing Smith Machine Shoulder Press", "Standing-Smith-Machine-Shoulder-Press.gif"], ["Standing straight leg raise", "Standing-straight-leg-raise.gif"], ["Standing Toe Flexor Stretch", "Standing-Toe-Flexor-Stretch.gif"], ["Standing Toe Touch", "Standing-Toe-Touch.gif"], ["Standing Toe Touches", "Standing-Toe-Touches.gif"], ["Standing Toe Up Achilles Stretch", "Standing-Toe-Up-Achilles-Stretch.gif"], ["Standing Triceps Extension", "Standing-Triceps-Extension.gif"], ["Standing Twist Machine", "Standing-Twist-Machine.gif"], ["Standing Wall Calf Stretch", "Standing-Wall-Calf-Stretch.gif"], ["Standing Wide Knees Adductor Stretch", "Standing-Wide-Knees-Adductor-Stretch.gif"], ["Standing Wide Leg Adductor Stretch", "Standing-Wide-Leg-Adductor-Stretch.gif"], ["Stationary Bike Run", "Stationary-Bike-Run.gif"], ["Step up", "Step-up.gif"], ["Step Up Opposite Elbow to Knee Twist", "Step-Up-Opposite-Elbow-to-Knee-Twist.gif"], ["Step Up Single Leg Balance with Bicep Curl", "Step-Up-Single-Leg-Balance-with-Bicep-Curl.gif"], ["Stiff Leg Deadlift", "Stiff-Leg-Deadlift.gif"], ["Straddle planche", "Straddle-planche.gif"], ["Straight Back back standing row", "Straight_Back-back-standing-row.gif"], ["Straight Bar Dip", "Straight-Bar-Dip.gif"], ["Straight Leg Kickback", "Straight-Leg-Kickback.gif"], ["Stretch With Towel", "Stretch-With-Towel.gif"], ["StrongMan Tire Flip", "StrongMan-Tire-Flip.gif"], ["Superman exercise", "Superman-exercise.gif"], ["Supine Medicine Ball Chest Throw exercise", "Supine-Medicine-Ball-Chest-Throw-exercise.gif"], ["supino inclinado 45 graus em pe com elastico", "supino-inclinado-45-graus-em-pe-com-elastico.gif"], ["supino reto em pe com elastico", "supino-reto-em-pe-com-elastico.gif"], ["Supported One Leg Standing Hip Flexor And Knee Extensor Stretch", "Supported-One-Leg-Standing-Hip-Flexor-And-Knee-Extensor-Stretch.gif"], ["Supported Pistol Squat", "Supported-Pistol-Squat.gif"], ["Suspended Ab Fall out", "Suspended-Ab-Fall-out.gif"], ["Suspended Push Up", "Suspended-Push-Up.gif"], ["Svend Press", "Svend-Press.gif"], ["Swimming", "Swimming.gif"], ["Swing Gymstick", "Swing-Gymstick.gif"], ["swiss ball rollout", "swiss-ball-rollout.gif"], ["swiss ball rollout (1)", "swiss-ball-rollout (1).gif"], ["T Bar Row", "T-Bar-Row.gif"], ["t bar rows", "t-bar-rows.gif"], ["T Cross Sit up", "T-Cross-Sit-up.gif"], ["Table Inverted Row", "Table-Inverted-Row.gif"], ["Teaser Pilates", "Teaser-Pilates.gif"], ["The Box Jump", "The-Box-Jump.gif"], ["thruster", "thruster.gif"], ["Tire SledgeHammer", "Tire-SledgeHammer.gif"], ["Toe Extensor Stretch", "Toe-Extensor-Stretch.gif"], ["Toe Reaches", "Toe-Reaches.gif"], ["Toes to Bar", "Toes-to-Bar.gif"], ["Towel Leg Curl", "Towel-Leg-Curl.gif"], ["Trap Bar Deadlift", "Trap-Bar-Deadlift.gif"], ["Treadmill", "Treadmill-.gif"], ["Triceps Dip Machine", "Triceps-Dip-Machine.gif"], ["Triceps Dips", "Triceps-Dips.gif"], ["Triceps Dips on Floor", "Triceps-Dips-on-Floor.gif"], ["Triceps dips on floors", "Triceps-dips-on-floors.gif"], ["Triceps Extension Machine", "Triceps-Extension-Machine.gif"], ["Triceps Extension with Resistance Bands", "Triceps-Extension-with-Resistance-Bands.gif"], ["Triceps Stretch", "Triceps-Stretch.gif"], ["TRX Mountain Climber", "TRX-Mountain-Climber.gif"], ["Tuck Crunch", "Tuck-Crunch.gif"], ["Tuck Jump", "Tuck-Jump.gif"], ["Turkish Get Up Squat style", "Turkish-Get-Up-Squat-style.gif"], ["Twist", "Twist.gif"], ["Twist down up", "Twist-down-up.gif"], ["Twisting Hyperextension", "Twisting-Hyperextension.gif"], ["Two Arm Cable Front Raise", "Two-Arm-Cable-Front-Raise.gif"], ["Two Arm Cable Lateral Raise", "Two-Arm-Cable-Lateral-Raise.gif"], ["Two Arm Dumbbell Front Raise", "Two-Arm-Dumbbell-Front-Raise.gif"], ["Two dumbbell preacher curl", "Two-dumbbell-preacher-curl.gif"], ["Unilateral Bridge", "Unilateral-Bridge.gif"], ["Upavistha Konasana", "Upavistha-Konasana.gif"], ["Upper Back Stretch", "Upper-Back-Stretch.gif"], ["Upside Down Pull up", "Upside-Down-Pull-up.gif"], ["V bar Lat Pulldown", "V-bar-Lat-Pulldown.gif"], ["V bar Pushdown", "V-bar-Pushdown.gif"], ["V Up Down with Stability ball", "V-Up-Down-with-Stability-ball.gif"], ["Vertical Mountain Climber", "Vertical-Mountain-Climber.gif"], ["Walk Wave Machine", "Walk-Wave-Machine.gif"], ["Walking", "Walking.gif"], ["Walking High Knee Lunges", "Walking-High-Knee-Lunges.gif"], ["Walking on Stepmill", "Walking-on-Stepmill.gif"], ["Wall Push ups", "Wall-Push-ups.gif"], ["Wall Sit 238x360", "Wall-Sit-238x360.png"], ["wall slide", "wall-slide.gif"], ["Wall Supported Arm Raises", "Wall-Supported-Arm-Raises.gif"], ["Water Bottle Hammer Curl", "Water-Bottle-Hammer-Curl.gif"], ["Weighted Back Extension", "Weighted-Back-Extension.gif"], ["Weighted Crunch", "Weighted-Crunch.gif"], ["Weighted Donkey Calf Raise", "Weighted-Donkey-Calf-Raise.gif"], ["Weighted Front Plank", "Weighted-Front-Plank.gif"], ["weighted hanging knee raises", "weighted-hanging-knee-raises.gif"], ["weighted lying twist", "weighted-lying-twist.gif"], ["Weighted One Arm Pull up", "Weighted-One-Arm-Pull-up.gif"], ["Weighted Pull up", "Weighted-Pull-up.gif"], ["Weighted Push up", "Weighted-Push-up.gif"], ["weighted round arm", "weighted-round-arm.gif"], ["Weighted Seated Calf Raise", "Weighted-Seated-Calf-Raise.gif"], ["Weighted Side Bend on stability ball", "Weighted-Side-Bend-on-stability-ball.gif"], ["Weighted Vest Push up", "Weighted-Vest-Push-up.gif"], ["Weighted Wrist Curl", "Weighted-Wrist-Curl.gif"], ["weightedsitups", "weightedsitups.gif"], ["Wheel Run", "Wheel-Run.gif"], ["Wide Grip Barbell Bench Press", "Wide-Grip-Barbell-Bench-Press.gif"], ["Wide Grip Reverse Bench Press", "Wide-Grip-Reverse-Bench-Press.gif"], ["Wrist Circles Stretch", "Wrist-Circles-Stretch.gif"], ["wrist roller", "wrist-roller.gif"], ["Z Bar Curl", "Z-Bar-Curl.gif"], ["Z Bar Preacher Curl", "Z-Bar-Preacher-Curl.gif"], ["zercher deadlift", "zercher-deadlift.gif"], ["Zercher Squat", "Zercher-Squat.gif"], ["Zig Zag Hops Plyometric", "Zig-Zag-Hops-Plyometric.gif"], ["zottman curl", "zottman-curl.gif"]];
 
   function normalizeExercises(list){
@@ -1449,6 +1646,244 @@
     window.open(url, '_blank');
   });
 
+  $('ptGuideBtn').addEventListener('click', ()=>{
+    let cards = '';
+    exercises.forEach(ex=>{
+      if(!ex.name) return;
+      const desc = ex.file ? EXERCISE_DESCRIPTIONS[ex.file] : null;
+      const imgHtml = ex.file
+        ? '<img src="'+encodeURI(IMG_BASE_PATH+ex.file)+'" alt="" onerror="this.style.display=\'none\'">'
+        : '';
+      const descHtml = desc
+        ? '<p class="desc">'+desc+'</p>'
+        : '<p class="desc missing">Descrição ainda não disponível para este exercício — vamos completando a biblioteca aos poucos.</p>';
+      cards += '<div class="ex-card"><h2>'+ex.name+'</h2>'+imgHtml+descHtml+
+        '<div class="times">Trabalho '+ex.work+'s · Descanso '+ex.rest+'s</div></div>';
+    });
+    if(!cards){ cards = '<p>Ainda não escolheste nenhum exercício na secção 3.</p>'; }
+    const html = '<!DOCTYPE html><html lang="pt-PT"><head><meta charset="UTF-8"><title>Guia PT — Ritmo</title>'+
+      '<style>'+
+      'body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#181818;max-width:760px;margin:0 auto;background:#faf9f7;}'+
+      'h1{margin:0 0 4px;font-size:26px;} .meta{color:#666;font-size:13.5px;margin-bottom:22px;}'+
+      '.ex-card{background:#fff;border:1px solid #e4e4e4;border-radius:8px;padding:18px 20px;margin-bottom:16px;}'+
+      '.ex-card h2{margin:0 0 10px;font-size:18px;}'+
+      '.ex-card img{display:block;max-width:220px;max-height:220px;object-fit:contain;margin-bottom:12px;border-radius:6px;background:#f0f0f0;}'+
+      '.desc{font-size:14px;line-height:1.55;margin:0 0 10px;} .desc.missing{color:#999;font-style:italic;}'+
+      '.times{font-size:12.5px;color:#666;font-weight:bold;}'+
+      '.print-btn{margin:0 0 22px;background:#181818;color:#fff;border:none;border-radius:4px;padding:10px 18px;font-size:13px;cursor:pointer;}'+
+      '@media print{ .print-btn{display:none;} }'+
+      '</style></head><body>'+
+      '<h1>Guia PT — como executar cada exercício</h1>'+
+      '<div class="meta">Descrições recolhidas e escritas com base em pesquisa própria — a biblioteca completa (1033 exercícios) está a ser preenchida aos poucos.</div>'+
+      '<button class="print-btn" onclick="window.print()">Imprimir / Guardar em PDF</button>'+
+      cards+
+      '</body></html>';
+    const blob2 = new Blob([html], {type:'text/html'});
+    const url2 = URL.createObjectURL(blob2);
+    window.open(url2, '_blank');
+  });
+
+  /* ============ SEPARADORES DE TOPO ============ */
+  function showTopTab(tab){
+    document.getElementById('setup').style.display = tab==='prep' ? 'block' : 'none';
+    document.getElementById('tabPtGuide').style.display = tab==='pt' ? 'block' : 'none';
+    document.getElementById('tabAvaliacao').style.display = tab==='eval' ? 'block' : 'none';
+    document.querySelector('.start-bar').style.display = tab==='prep' ? 'flex' : 'none';
+    document.querySelectorAll('.top-tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+    if(tab==='pt') renderPtLibList(true);
+    if(tab==='eval') renderEvalHistory();
+    window.scrollTo({top:0});
+  }
+  document.querySelectorAll('.top-tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>showTopTab(btn.dataset.tab));
+  });
+
+  /* ============ GUIA PT — biblioteca completa ============ */
+  let ptLibShown = 0;
+  const PT_LIB_PAGE = 30;
+  function renderPtLibList(reset){
+    if(reset) ptLibShown = 0;
+    const q = document.getElementById('ptLibSearch').value.trim().toLowerCase();
+    const items = q ? EXERCISE_LIBRARY.filter(e=>e[0].toLowerCase().includes(q)) : EXERCISE_LIBRARY;
+    const listEl = document.getElementById('ptLibList');
+    if(reset) listEl.innerHTML = '';
+    const nextBatch = items.slice(ptLibShown, ptLibShown+PT_LIB_PAGE);
+    nextBatch.forEach(([display,file])=>{
+      const desc = EXERCISE_DESCRIPTIONS[file];
+      const card = document.createElement('div');
+      card.className = 'pt-lib-card';
+      card.innerHTML =
+        '<img class="pt-lib-thumb" src="'+encodeURI(IMG_BASE_PATH+file)+'" onerror="this.style.visibility=\'hidden\'">'+
+        '<div class="pt-lib-info"><h4>'+display+'</h4>'+
+        (desc ? '<p>'+desc+'</p>' : '<p class="missing">Descrição ainda não disponível — a biblioteca vai sendo completada aos poucos.</p>')+
+        '</div>';
+      listEl.appendChild(card);
+    });
+    ptLibShown += nextBatch.length;
+    const moreEl = document.getElementById('ptLibMore');
+    moreEl.innerHTML = '';
+    if(ptLibShown < items.length){
+      const btn = document.createElement('button');
+      btn.className = 'pt-lib-more-btn';
+      btn.textContent = 'Ver mais ('+(items.length-ptLibShown)+' restantes)';
+      btn.addEventListener('click', ()=>renderPtLibList(false));
+      moreEl.appendChild(btn);
+    } else if(!items.length){
+      moreEl.innerHTML = '<p class="ex-picker-empty">Nenhum exercício encontrado.</p>';
+    }
+  }
+  document.getElementById('ptLibSearch').addEventListener('input', ()=>renderPtLibList(true));
+
+  /* ============ AVALIAÇÃO — calculadoras cardiorrespiratórias ============ */
+  function showEvalResult(elId, html){
+    const el = document.getElementById(elId);
+    el.innerHTML = html;
+    el.classList.add('show');
+  }
+
+  const lastEvalResults = {};
+
+  function capKey(k){ return k.charAt(0).toUpperCase()+k.slice(1); }
+
+  async function saveEvalResult(key, testLabel){
+    const name = document.getElementById('evPersonName').value.trim();
+    const msgEl = document.getElementById('ev'+capKey(key)+'SaveMsg');
+    if(!name){ msgEl.textContent = 'Escreve o nome da pessoa antes de guardar (no topo da página).'; return; }
+    const data = lastEvalResults[key];
+    if(!data){ return; }
+    const id = 'eval:'+Date.now()+':'+key;
+    const record = { id, name, testLabel, resultHtml: data.resultHtml, inputsSummary: data.inputsSummary, createdAt: Date.now() };
+    const ok = await storageSet(id, record);
+    msgEl.textContent = ok ? 'Guardado para '+name+'.' : 'Não foi possível guardar agora.';
+    setTimeout(()=>{ msgEl.textContent=''; }, 4000);
+    renderEvalHistory();
+  }
+
+  document.getElementById('evHrBtn').addEventListener('click', ()=>{
+    const age = +document.getElementById('evAge').value;
+    const rest = +document.getElementById('evRestHr').value;
+    const lo = (+document.getElementById('evIntLow').value)/100;
+    const hi = (+document.getElementById('evIntHigh').value)/100;
+    const fcMaxSimples = 220 - age;
+    const tanaka = 208 - 0.7*age;
+    const gellish = 207 - 0.7*age;
+    const reserva = tanaka - rest;
+    const zonaResInf = reserva*lo + rest;
+    const zonaResSup = reserva*hi + rest;
+    const zonaSimplesInf = tanaka*lo;
+    const zonaSimplesSup = tanaka*hi;
+    const html =
+      '<b>Fc máx. estimada</b><br>Fórmula simples (220-idade): '+fcMaxSimples.toFixed(0)+' bpm<br>'+
+      'Tanaka (208-0,7×idade): '+tanaka.toFixed(1)+' bpm<br>'+
+      'Gellish (207-0,7×idade): '+gellish.toFixed(1)+' bpm<br><br>'+
+      '<b>Zona de treino ('+(lo*100).toFixed(0)+'-'+(hi*100).toFixed(0)+'%), por Fc de Reserva (Karvonen)</b><br>'+
+      zonaResInf.toFixed(0)+' – '+zonaResSup.toFixed(0)+' bpm<br><br>'+
+      '<b>Zona de treino, por % direta da Fc máx. (Tanaka)</b><br>'+
+      zonaSimplesInf.toFixed(0)+' – '+zonaSimplesSup.toFixed(0)+' bpm';
+    showEvalResult('evHrResult', html);
+    lastEvalResults.hr = { resultHtml: html, inputsSummary: 'Idade '+age+', Fc repouso '+rest+', intensidade '+(lo*100)+'-'+(hi*100)+'%' };
+    document.getElementById('evHrSaveBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('evRowBtn').addEventListener('click', ()=>{
+    const sex = document.getElementById('evRowSex').value;
+    const weight = +document.getElementById('evRowWeight').value;
+    const time = +document.getElementById('evRowTime').value;
+    let absAlto, absBaixo, catLabel;
+    if(sex==='f'){
+      if(weight<=61.36){ absAlto = 14.6-1.5*time; absBaixo = 10.26-0.93*time; catLabel='Mulher ≤ 61,36 kg'; }
+      else { absAlto = 14.9-1.5*time; absBaixo = null; catLabel='Mulher > 61,36 kg'; }
+    } else {
+      if(weight<=75){ absAlto = 15.1-1.5*time; absBaixo = 10.7-0.9*time; catLabel='Homem ≤ 75 kg'; }
+      else { absAlto = 15.7-1.5*time; absBaixo = null; catLabel='Homem > 75 kg'; }
+    }
+    const relAlto = absAlto*1000/weight;
+    const relBaixo = absBaixo!=null ? absBaixo*1000/weight : null;
+    const html =
+      '<b>Categoria:</b> '+catLabel+'<br><br>'+
+      '<b>Nível de treino elevado</b><br>Absoluto: '+absAlto.toFixed(2)+' L/min · Relativo: '+relAlto.toFixed(1)+' ml/kg/min<br><br>'+
+      (relBaixo!=null
+        ? '<b>Nível de treino baixo</b><br>Absoluto: '+absBaixo.toFixed(2)+' L/min · Relativo: '+relBaixo.toFixed(1)+' ml/kg/min'
+        : '<i>Nível de treino baixo não definido para esta categoria de peso na tabela original.</i>');
+    showEvalResult('evRowResult', html);
+    lastEvalResults.row = { resultHtml: html, inputsSummary: catLabel+', peso '+weight+'kg, tempo '+time+'min' };
+    document.getElementById('evRowSaveBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('evEbbBtn').addEventListener('click', ()=>{
+    const sex = document.getElementById('evEbbSex').value;
+    const age = +document.getElementById('evEbbAge').value;
+    const speedKmh = +document.getElementById('evEbbSpeed').value;
+    const hr = +document.getElementById('evEbbHr').value;
+    const mph = speedKmh/1.61;
+    const genero = sex==='m' ? 1 : 0;
+    const vo2 = 15.1 + (21.8*mph) - (0.327*hr) - (0.263*mph*age) + (0.00504*hr*age) + (5.98*genero);
+    const html = '<b>VO2máx. estimado:</b> '+vo2.toFixed(1)+' ml/kg/min';
+    showEvalResult('evEbbResult', html);
+    lastEvalResults.ebb = { resultHtml: html, inputsSummary: (sex==='m'?'Homem':'Mulher')+', idade '+age+', '+speedKmh+' km/h, Fc '+hr };
+    document.getElementById('evEbbSaveBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('evBalkeBtn').addEventListener('click', ()=>{
+    const sex = document.getElementById('evBalkeSex').value;
+    const t = +document.getElementById('evBalkeTime').value;
+    const vo2 = sex==='m' ? (1.44*t)+14.99 : (1.38*t)+5.22;
+    const html = '<b>VO2máx. estimado:</b> '+vo2.toFixed(1)+' ml/kg/min';
+    showEvalResult('evBalkeResult', html);
+    lastEvalResults.balke = { resultHtml: html, inputsSummary: (sex==='m'?'Homem':'Mulher')+', '+t+' minutos' };
+    document.getElementById('evBalkeSaveBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('evBruceBtn').addEventListener('click', ()=>{
+    const sex = document.getElementById('evBruceSex').value;
+    const t = +document.getElementById('evBruceTime').value;
+    const vo2 = sex==='m' ? (14.8-(1.379*t)+(0.451*t*t)-(0.012*t*t*t)) : ((4.38*t)-3.9);
+    const html = '<b>VO2máx. estimado:</b> '+vo2.toFixed(1)+' ml/kg/min';
+    showEvalResult('evBruceResult', html);
+    lastEvalResults.bruce = { resultHtml: html, inputsSummary: (sex==='m'?'Homem':'Mulher')+', '+t+' minutos' };
+    document.getElementById('evBruceSaveBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('evHrSaveBtn').addEventListener('click', ()=>saveEvalResult('hr','Zonas de frequência cardíaca'));
+  document.getElementById('evRowSaveBtn').addEventListener('click', ()=>saveEvalResult('row','Remo Concept2 2000m'));
+  document.getElementById('evEbbSaveBtn').addEventListener('click', ()=>saveEvalResult('ebb','Teste de marcha Ebbeling'));
+  document.getElementById('evBalkeSaveBtn').addEventListener('click', ()=>saveEvalResult('balke','Balke & Ware'));
+  document.getElementById('evBruceSaveBtn').addEventListener('click', ()=>saveEvalResult('bruce','Bruce submáximo'));
+
+  async function renderEvalHistory(){
+    const q = (document.getElementById('evHistSearch').value||'').trim().toLowerCase();
+    const keys = await storageList('eval:');
+    const listEl = document.getElementById('evHistList');
+    if(!keys.length){ listEl.innerHTML = '<p class="eval-hint">Ainda não há avaliações guardadas.</p>'; return; }
+    let items = (await Promise.all(keys.map(k=>storageGet(k)))).filter(Boolean);
+    if(q) items = items.filter(it=>(it.name||'').toLowerCase().includes(q));
+    items.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    if(!items.length){ listEl.innerHTML = '<p class="eval-hint">Nenhum resultado para essa pesquisa.</p>'; return; }
+    const byName = {};
+    items.forEach(it=>{ (byName[it.name]=byName[it.name]||[]).push(it); });
+    let html = '';
+    Object.keys(byName).forEach(name=>{
+      html += '<div class="hist-group-name">'+name+'</div>';
+      byName[name].forEach(it=>{
+        const d = new Date(it.createdAt||0);
+        html += '<div class="hist-item" data-id="'+it.id+'">'+
+          '<div class="hist-item-head"><span class="hist-item-name">'+it.testLabel+'</span>'+
+          '<button class="hist-del-btn" data-del="'+it.id+'">✕</button></div>'+
+          '<div class="hist-item-meta">'+d.toLocaleDateString('pt-PT')+' '+d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})+' · '+(it.inputsSummary||'')+'</div>'+
+          '<div class="hist-item-body">'+it.resultHtml+'</div>'+
+        '</div>';
+      });
+    });
+    listEl.innerHTML = html;
+    listEl.querySelectorAll('[data-del]').forEach(btn=>{
+      btn.addEventListener('click', async e=>{
+        await storageDelete(e.target.dataset.del);
+        renderEvalHistory();
+      });
+    });
+  }
+  document.getElementById('evHistSearch').addEventListener('input', renderEvalHistory);
+
   /* ============ WAKE LOCK (manter ecrã ligado durante a aula) ============ */
   let wakeLock = null;
   async function requestWakeLock(){
@@ -1674,13 +2109,11 @@
     classLocked = false; applyLockUI();
     releaseWakeLock();
     classView.classList.remove('show');
-    document.getElementById('setup').style.display='block';
-    document.querySelector('.start-bar').style.display='flex';
+    showTopTab('prep');
   });
   $('restartBtn').addEventListener('click', ()=>{
     $('endScreen').classList.remove('show');
-    document.getElementById('setup').style.display='block';
-    document.querySelector('.start-bar').style.display='flex';
+    showTopTab('prep');
   });
 
   $('muteMusic').addEventListener('click', function(){
