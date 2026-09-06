@@ -927,6 +927,7 @@
           '<span class="yt-tag">🎬</span>'+
           '<input type="text" placeholder="Link do YouTube (opcional)" value="'+(t.ytInput||'')+'" data-yt="'+i+'">'+
           '<button class="yt-search-btn" data-search="'+i+'">🔎 '+(t.ytAuto?'refazer':'procurar')+'</button>'+
+          '<button class="yt-search-btn" data-usereserve="'+i+'" title="Usar sempre este vídeo de reserva">↩ reserva</button>'+
           '</div>'+
           (t.ytAuto?'<div class="yt-status yt-status-ok">encontrado automaticamente — podes trocar o link acima</div>':'')+
           (t.ytFallback?'<div class="yt-status yt-status-warn">pesquisa falhou'+(t.ytErrorMsg?(' — '+t.ytErrorMsg):'')+'; a usar vídeo de reserva — podes trocar o link acima</div>':'')+
@@ -997,6 +998,16 @@
           const q = encodeURIComponent(playlist[i].name.replace(/\.[a-zA-Z0-9]+$/,''));
           window.open('https://www.youtube.com/results?search_query='+q, '_blank');
         }
+      });
+    });
+    trackListEl.querySelectorAll('[data-usereserve]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const i = +e.target.dataset.usereserve;
+        if(!FALLBACK_YT_VIDEO_ID) return;
+        playlist[i].videoId = FALLBACK_YT_VIDEO_ID;
+        playlist[i].ytInput = 'https://www.youtube.com/watch?v='+FALLBACK_YT_VIDEO_ID;
+        playlist[i].ytFallback = true; playlist[i].ytAuto = false; playlist[i].ytSearchFailed = false; playlist[i].ytErrorMsg = null;
+        renderTrackList();
       });
     });
   }
