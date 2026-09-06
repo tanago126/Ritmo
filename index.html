@@ -346,9 +346,55 @@
     .subtitle{margin-left:0;}
     .save-grid{grid-template-columns:1fr; }
   }
+
+  #loginGate{
+    position:fixed; inset:0; z-index:200; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  #loginGate.hide{display:none;}
+  .login-card{width:100%; max-width:340px; text-align:center;}
+  .login-hint{color:var(--text-dim); font-size:13.5px; margin:0 0 16px;}
+  .login-card input[type=password]{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius);
+    color:var(--text); font-size:14px; padding:11px 12px; font-family:'Inter',sans-serif; margin-bottom:10px;
+  }
+  .login-card input[type=password]:focus{outline:1.5px solid var(--prep); border-color:var(--prep);}
+  .login-msg{color:var(--work); font-size:12.5px; margin-top:10px; min-height:16px;}
+  .login-reset{display:block; margin-top:16px; color:var(--text-dim); font-size:12.5px; text-decoration:underline; cursor:pointer;}
+  .login-reset:hover{color:var(--rest);}
 </style>
 </head>
 <body>
+
+<div id="loginGate">
+  <div class="login-card">
+    <div class="brand" style="margin-bottom:22px; justify-content:center;">
+      <svg class="brand-mark" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="16" stroke="#FFC93C" stroke-width="2"/>
+        <path d="M11 13c0-1.7 1.3-3 3-3h6a5 5 0 015 5v0a5 5 0 01-5 5h-1.2L17 24l-1.8-4H14a3 3 0 01-3-3v-4z" fill="#FFC93C"/>
+        <circle cx="20" cy="15.5" r="1.6" fill="#12151A"/>
+      </svg>
+      <h1 class="title">RITMO</h1>
+    </div>
+
+    <div id="loginCreateView">
+      <p class="login-hint">Primeira vez aqui — cria uma password para proteger o acesso a esta app.</p>
+      <input type="password" id="loginNewPass" placeholder="Nova password" autocomplete="new-password">
+      <input type="password" id="loginNewPass2" placeholder="Confirma a password" autocomplete="new-password">
+      <button class="start-btn" id="loginCreateBtn" style="margin-top:14px;">CRIAR E ENTRAR</button>
+      <div class="login-msg" id="loginCreateMsg"></div>
+    </div>
+
+    <div id="loginEnterView" style="display:none;">
+      <p class="login-hint">Introduz a password para abrires a app.</p>
+      <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+      <button class="start-btn" id="loginEnterBtn" style="margin-top:14px;">ENTRAR</button>
+      <div class="login-msg" id="loginEnterMsg"></div>
+      <a href="#" id="loginResetLink" class="login-reset">Esqueci-me da password</a>
+    </div>
+  </div>
+</div>
+
 
 <!-- ================= SETUP ================= -->
 <div id="setup">
@@ -1886,6 +1932,58 @@
     if(savedYtKey){ lockKeyUI(savedYtKey); autoSearchAllPending(); }
     else { unlockKeyUI(''); }
   })();
+
+  /* ============ ECRÃ DE LOGIN (password única para abrir a app) ============ */
+  const loginGate = document.getElementById('loginGate');
+  const loginCreateView = document.getElementById('loginCreateView');
+  const loginEnterView = document.getElementById('loginEnterView');
+
+  (async function initLoginGate(){
+    const hash = await storageGet('settings:appPassHash');
+    if(hash){
+      loginCreateView.style.display = 'none';
+      loginEnterView.style.display = 'block';
+    } else {
+      loginCreateView.style.display = 'block';
+      loginEnterView.style.display = 'none';
+    }
+  })();
+
+  document.getElementById('loginCreateBtn').addEventListener('click', async ()=>{
+    const p1 = document.getElementById('loginNewPass').value;
+    const p2 = document.getElementById('loginNewPass2').value;
+    const msg = document.getElementById('loginCreateMsg');
+    if(!p1){ msg.textContent = 'Escreve uma password.'; return; }
+    if(p1!==p2){ msg.textContent = 'As passwords não coincidem.'; return; }
+    await storageSet('settings:appPassHash', simpleHash(p1));
+    loginGate.classList.add('hide');
+  });
+
+  document.getElementById('loginEnterBtn').addEventListener('click', async ()=>{
+    const pass = document.getElementById('loginPass').value;
+    const msg = document.getElementById('loginEnterMsg');
+    const hash = await storageGet('settings:appPassHash');
+    if(simpleHash(pass)===hash){
+      loginGate.classList.add('hide');
+    } else {
+      msg.textContent = 'Password incorreta.';
+    }
+  });
+  document.getElementById('loginPass').addEventListener('keydown', e=>{
+    if(e.key==='Enter') document.getElementById('loginEnterBtn').click();
+  });
+  document.getElementById('loginNewPass2').addEventListener('keydown', e=>{
+    if(e.key==='Enter') document.getElementById('loginCreateBtn').click();
+  });
+
+  document.getElementById('loginResetLink').addEventListener('click', async (e)=>{
+    e.preventDefault();
+    if(confirm('Isto apaga a password guardada neste dispositivo e vais poder criar uma nova. Continuar?')){
+      await storageDelete('settings:appPassHash');
+      loginEnterView.style.display = 'none';
+      loginCreateView.style.display = 'block';
+    }
+  });
 
 })();
 </script>
