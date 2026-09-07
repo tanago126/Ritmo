@@ -95,6 +95,41 @@
   .hist-del-btn{background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:14px;}
   .hist-del-btn:hover{color:var(--work);}
   .hist-group-name{font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.03em; color:var(--prep); margin:14px 0 6px;}
+
+  .sp-student-card{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    background:var(--panel); border-radius:6px; padding:14px 16px; margin-bottom:8px; cursor:pointer;
+  }
+  .sp-student-card:hover{border:1px solid var(--prep);}
+  .sp-student-card h4{margin:0 0 3px; font-size:14.5px;}
+  .sp-student-card p{margin:0; font-size:12px; color:var(--text-dim);}
+  .sp-plan-card{
+    background:var(--panel); border-radius:6px; padding:14px 16px; margin-bottom:8px;
+  }
+  .sp-plan-card-head{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .sp-plan-card h4{margin:0; font-size:14.5px; cursor:pointer;}
+  .sp-plan-card h4:hover{color:var(--prep);}
+  .sp-plan-meta{font-size:11.5px; color:var(--text-dim); margin-top:4px;}
+  .sp-plan-badge{font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(47,211,199,0.18); color:var(--rest);}
+  .sp-plan-actions{display:flex; gap:6px; flex:none;}
+  .sp-ex-card{background:var(--panel); border-radius:6px; padding:14px;}
+  .sp-ex-card-head{display:flex; gap:12px; align-items:center;}
+  .sp-ex-thumb{width:56px; height:56px; object-fit:cover; border-radius:4px; background:var(--panel-2); flex:none;}
+  .sp-ex-name{font-weight:700; font-size:14px; flex:1;}
+  .sp-ex-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px;}
+  .sp-ex-field label{display:block; font-size:10.5px; color:var(--text-dim); margin-bottom:3px;}
+  .sp-ex-field input, .sp-ex-field select{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:4px;
+    color:var(--text); font-size:12.5px; padding:6px 6px; font-family:'Inter',sans-serif;
+  }
+  .sp-ex-notes{margin-top:8px;}
+  .sp-ex-notes textarea{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:4px;
+    color:var(--text); font-size:12.5px; padding:7px 8px; font-family:'Inter',sans-serif; resize:vertical;
+  }
+  .sp-evo-item{background:var(--panel); border-radius:6px; padding:10px 14px; margin-bottom:6px; font-size:13px;}
+  .sp-evo-date{color:var(--prep); font-weight:700; font-size:12px;}
+  @media (max-width:480px){ .sp-ex-grid{grid-template-columns:repeat(2,1fr);} }
   h1.title{
     font-family:'Bebas Neue',sans-serif;
     font-size:44px;
@@ -424,20 +459,11 @@
       <h1 class="title">RITMO</h1>
     </div>
 
-    <div id="loginCreateView">
-      <p class="login-hint">Primeira vez aqui — cria uma password para proteger o acesso a esta app.</p>
-      <input type="password" id="loginNewPass" placeholder="Nova password" autocomplete="new-password">
-      <input type="password" id="loginNewPass2" placeholder="Confirma a password" autocomplete="new-password">
-      <button class="start-btn" id="loginCreateBtn" style="margin-top:14px;">CRIAR E ENTRAR</button>
-      <div class="login-msg" id="loginCreateMsg"></div>
-    </div>
-
-    <div id="loginEnterView" style="display:none;">
+    <div id="loginEnterView">
       <p class="login-hint">Introduz a password para abrires a app.</p>
       <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
       <button class="start-btn" id="loginEnterBtn" style="margin-top:14px;">ENTRAR</button>
       <div class="login-msg" id="loginEnterMsg"></div>
-      <a href="#" id="loginResetLink" class="login-reset">Esqueci-me da password</a>
     </div>
   </div>
 </div>
@@ -446,6 +472,7 @@
   <button class="top-tab-btn active" data-tab="prep" type="button">🏋️ Preparar aula</button>
   <button class="top-tab-btn" data-tab="pt" type="button">📖 Guia PT</button>
   <button class="top-tab-btn" data-tab="eval" type="button">🫀 Avaliação</button>
+  <button class="top-tab-btn" data-tab="students" type="button">👤 Plano do Aluno</button>
 </div>
 
 <!-- ================= SETUP ================= -->
@@ -457,7 +484,7 @@
       <circle cx="20" cy="15.5" r="1.6" fill="#12151A"/>
     </svg>
     <h1 class="title">RITMO</h1>
-    <button id="logoutBtn" class="logout-link" type="button">Terminar sessão</button>
+    <button id="logoutBtn" class="logout-link" type="button">🚪 Terminar sessão</button>
   </div>
   <p class="subtitle">Carrega a tua música, escolhe a estrutura, e sai pronto com música + apitos sincronizados.</p>
 
@@ -717,6 +744,91 @@
   <div style="height:40px;"></div>
 </div>
 
+<!-- ================= PLANO DO ALUNO ================= -->
+<div id="tabStudents" class="tab-panel" style="display:none;">
+
+  <!-- Sub-vista: lista de alunos -->
+  <div id="spViewList">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+      <input type="text" id="spSearchStudent" placeholder="🔍 Pesquisar aluno…" autocomplete="off" style="flex:1; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:10px 12px; font-family:'Inter',sans-serif;">
+      <button class="save-btn" id="spNewStudentBtn" style="white-space:nowrap;">+ NOVO ALUNO</button>
+    </div>
+    <div id="spStudentList"></div>
+  </div>
+
+  <!-- Sub-vista: novo/editar aluno -->
+  <div id="spViewNewStudent" style="display:none;">
+    <button class="plan-link-btn" id="spBackFromNewStudent" type="button" style="text-align:left;">← voltar</button>
+    <div class="eval-card">
+      <h3 id="spNewStudentTitle">Novo aluno</h3>
+      <div class="field-grid">
+        <div class="field" style="grid-column:1/-1;"><label>Nome</label><input type="text" id="spStName" placeholder="Nome do aluno"></div>
+        <div class="field"><label>Data de nascimento</label><input type="date" id="spStBirth"></div>
+        <div class="field"><label>Objetivo</label><input type="text" id="spStGoal" placeholder="Ex.: perder peso, ganhar força…"></div>
+      </div>
+      <label style="display:block; font-size:12px; color:var(--text-dim); margin:12px 0 6px;">Observações</label>
+      <textarea id="spStNotes" rows="3" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:10px 12px; font-family:'Inter',sans-serif; resize:vertical;"></textarea>
+      <button class="save-btn" id="spSaveStudentBtn" style="margin-top:14px;">GUARDAR ALUNO</button>
+      <div class="eval-hint" id="spStMsg" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- Sub-vista: ficha do aluno + planos -->
+  <div id="spViewStudent" style="display:none;">
+    <button class="plan-link-btn" id="spBackToList" type="button" style="text-align:left;">← todos os alunos</button>
+    <div class="eval-card">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div>
+          <h3 id="spStudentName">—</h3>
+          <p class="eval-hint" id="spStudentMeta" style="margin:0;"></p>
+        </div>
+        <button class="track-remove" id="spEditStudentBtn" title="Editar ficha do aluno">✏️</button>
+      </div>
+      <p class="eval-hint" id="spStudentGoal"></p>
+      <p class="eval-hint" id="spStudentNotes"></p>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:18px 0 10px;">
+      <h3 style="margin:0; font-size:16px;">Planos de treino</h3>
+      <button class="save-btn" id="spNewPlanBtn">+ NOVO PLANO DE TREINO</button>
+    </div>
+    <div id="spPlanList"></div>
+
+    <div style="margin-top:22px;">
+      <button class="plan-link-btn" id="spEvolutionBtn" type="button">📈 Ver evolução deste aluno</button>
+    </div>
+  </div>
+
+  <!-- Sub-vista: editor de plano -->
+  <div id="spViewPlanEditor" style="display:none;">
+    <button class="plan-link-btn" id="spBackFromEditor" type="button" style="text-align:left;">← voltar ao aluno</button>
+    <div class="eval-card">
+      <label style="display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;">Nome do plano</label>
+      <input type="text" id="spPlanName" placeholder="Ex.: Plano de Força — Semana 1" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:10px 12px; font-family:'Inter',sans-serif;">
+    </div>
+    <div id="spPlanExList" style="display:flex; flex-direction:column; gap:12px;"></div>
+    <button class="ex-add" id="spAddExBtn" style="margin-top:12px;">+ Adicionar exercício da biblioteca</button>
+    <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;">
+      <button class="save-btn" id="spSavePlanBtn">GUARDAR PLANO</button>
+      <button class="plan-link-btn" id="spDuplicatePlanBtn" type="button" style="display:none;">⧉ Duplicar este plano</button>
+      <button class="plan-link-btn" id="spViewPlanBtn" type="button" style="display:none;">👁 Ver plano (modo aluno)</button>
+    </div>
+    <div class="eval-hint" id="spPlanMsg" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- Sub-vista: evolução -->
+  <div id="spViewEvolution" style="display:none;">
+    <button class="plan-link-btn" id="spBackFromEvolution" type="button" style="text-align:left;">← voltar ao aluno</button>
+    <div class="eval-card">
+      <label style="display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;">Exercício</label>
+      <select id="spEvoExSelect" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-size:14px; padding:9px 10px; font-family:'Inter',sans-serif;"></select>
+    </div>
+    <div id="spEvoList"></div>
+  </div>
+
+  <div style="height:40px;"></div>
+</div>
+
 <div class="start-bar">
   <div style="max-width:592px; width:100%;">
     <button class="start-btn" id="startBtn" disabled>COMEÇAR AULA</button>
@@ -953,45 +1065,52 @@
   exAddBtn.addEventListener('click', ()=>{ exercises.push({name:'', work:40, rest:20}); renderExList(); });
   renderExList();
 
-  /* ============ COMBOBOX DE SELEÇÃO DE EXERCÍCIO (biblioteca) ============ */
+  /* ============ COMBOBOX DE SELEÇÃO DE EXERCÍCIO (biblioteca) — reutilizável ============ */
   const exPickerOverlay = $('exPickerOverlay'), exPickerList = $('exPickerList'), exPickerSearch = $('exPickerSearch');
-  let exPickerTarget = null;
+  let exPickerOnSelect = null; // callback(record) — record é um item de EXERCISE_DB
 
   function renderExPickerList(filterText){
     const q = (filterText||'').trim().toLowerCase();
-    const items = q ? EXERCISE_LIBRARY.filter(e=>e[0].toLowerCase().includes(q)) : EXERCISE_LIBRARY;
+    const items = q ? EXERCISE_DB.filter(e=>e.n.toLowerCase().includes(q)) : EXERCISE_DB;
     if(!items.length){
       exPickerList.innerHTML = '<div class="ex-picker-empty">Nenhum exercício encontrado.</div>';
       return;
     }
     const LIMIT = 250; // suficiente para scroll fluido; a pesquisa estreita rapidamente
     const shown = items.slice(0, LIMIT);
-    exPickerList.innerHTML = shown.map(([display,file])=>
-      '<div class="ex-picker-item" data-name="'+display.replace(/"/g,'&quot;')+'" data-file="'+file.replace(/"/g,'&quot;')+'">'+
-        '<img class="ex-picker-thumb" src="'+encodeURI(IMG_BASE_PATH+file)+'" onerror="this.style.visibility=\'hidden\'">'+
-        '<span class="ex-picker-name">'+display+'</span>'+
+    exPickerList.innerHTML = shown.map(rec=>
+      '<div class="ex-picker-item" data-file="'+rec.f.replace(/"/g,'&quot;')+'">'+
+        '<img class="ex-picker-thumb" src="'+encodeURI(IMG_BASE_PATH+rec.f)+'" onerror="this.style.visibility=\'hidden\'">'+
+        '<span class="ex-picker-name">'+rec.n+'</span>'+
       '</div>'
     ).join('');
     exPickerList.querySelectorAll('.ex-picker-item').forEach(row=>{
       row.addEventListener('click', ()=>{
-        if(exPickerTarget===null) return;
-        exercises[exPickerTarget].name = row.dataset.name;
-        exercises[exPickerTarget].file = row.dataset.file;
+        const rec = EXERCISE_BY_FILE[row.dataset.file];
+        if(!rec || !exPickerOnSelect) return;
+        exPickerOnSelect(rec);
         closeExPicker();
-        renderExList();
       });
     });
   }
-  function openExPicker(idx){
-    exPickerTarget = idx;
+  /* onSelect(record) é chamado com o item completo de EXERCISE_DB quando se escolhe um exercício */
+  function openExPickerGeneric(onSelect){
+    exPickerOnSelect = onSelect;
     exPickerSearch.value = '';
     renderExPickerList('');
     exPickerOverlay.classList.add('show');
     setTimeout(()=>exPickerSearch.focus(), 30);
   }
+  function openExPicker(idx){
+    openExPickerGeneric(rec=>{
+      exercises[idx].name = rec.n;
+      exercises[idx].file = rec.f;
+      renderExList();
+    });
+  }
   function closeExPicker(){
     exPickerOverlay.classList.remove('show');
-    exPickerTarget = null;
+    exPickerOnSelect = null;
   }
   exPickerSearch.addEventListener('input', ()=>renderExPickerList(exPickerSearch.value));
   $('exPickerClose').addEventListener('click', closeExPicker);
@@ -1670,10 +1789,12 @@
     document.getElementById('setup').style.display = tab==='prep' ? 'block' : 'none';
     document.getElementById('tabPtGuide').style.display = tab==='pt' ? 'block' : 'none';
     document.getElementById('tabAvaliacao').style.display = tab==='eval' ? 'block' : 'none';
+    document.getElementById('tabStudents').style.display = tab==='students' ? 'block' : 'none';
     document.querySelector('.start-bar').style.display = tab==='prep' ? 'flex' : 'none';
     document.querySelectorAll('.top-tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
     if(tab==='pt') renderPtLibList(true);
     if(tab==='eval') renderEvalHistory();
+    if(tab==='students'){ spShow('list'); spRenderStudentList(); }
     window.scrollTo({top:0});
   }
   document.querySelectorAll('.top-tab-btn').forEach(btn=>{
@@ -1905,6 +2026,350 @@
     });
   }
   document.getElementById('evHistSearch').addEventListener('input', renderEvalHistory);
+
+  /* ============ PLANO DO ALUNO ============ */
+  let spCurrentStudentId = null;
+  let spCurrentPlanId = null;
+  let spCurrentPlanExercises = [];
+  let spEditingStudentId = null;
+
+  function spViewIdFor(view){
+    return { list:'spViewList', newStudent:'spViewNewStudent', student:'spViewStudent', planEditor:'spViewPlanEditor', evolution:'spViewEvolution' }[view];
+  }
+  function spShow(view){
+    ['list','newStudent','student','planEditor','evolution'].forEach(v=>{
+      document.getElementById(spViewIdFor(v)).style.display = (v===view) ? 'block' : 'none';
+    });
+    window.scrollTo({top:0});
+  }
+
+  /* ---- Alunos ---- */
+  async function spRenderStudentList(){
+    const q = (document.getElementById('spSearchStudent').value||'').trim().toLowerCase();
+    const keys = await storageList('student:');
+    const listEl = document.getElementById('spStudentList');
+    if(!keys.length){ listEl.innerHTML = '<p class="eval-hint">Ainda não tens alunos. Clica em "+ Novo Aluno" para começares.</p>'; return; }
+    let students = (await Promise.all(keys.map(k=>storageGet(k)))).filter(Boolean);
+    if(q) students = students.filter(s=>(s.name||'').toLowerCase().includes(q));
+    students.sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt'));
+    if(!students.length){ listEl.innerHTML = '<p class="eval-hint">Nenhum aluno encontrado.</p>'; return; }
+    listEl.innerHTML = students.map(s=>
+      '<div class="sp-student-card" data-id="'+s.id+'"><div><h4>'+s.name+'</h4>'+
+      '<p>'+(s.goal?s.goal:'sem objetivo definido')+'</p></div><span class="chevron">›</span></div>'
+    ).join('');
+    listEl.querySelectorAll('.sp-student-card').forEach(el=>{
+      el.addEventListener('click', ()=>spOpenStudent(el.dataset.id));
+    });
+  }
+  document.getElementById('spSearchStudent').addEventListener('input', spRenderStudentList);
+  document.getElementById('spNewStudentBtn').addEventListener('click', ()=>{
+    spEditingStudentId = null;
+    document.getElementById('spNewStudentTitle').textContent = 'Novo aluno';
+    document.getElementById('spStName').value = '';
+    document.getElementById('spStBirth').value = '';
+    document.getElementById('spStGoal').value = '';
+    document.getElementById('spStNotes').value = '';
+    document.getElementById('spStMsg').textContent = '';
+    spShow('newStudent');
+  });
+  document.getElementById('spBackFromNewStudent').addEventListener('click', ()=>{
+    spShow(spEditingStudentId ? 'student' : 'list');
+    if(!spEditingStudentId) spRenderStudentList();
+  });
+  document.getElementById('spSaveStudentBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('spStName').value.trim();
+    const msg = document.getElementById('spStMsg');
+    if(!name){ msg.textContent = 'Escreve o nome do aluno.'; return; }
+    const id = spEditingStudentId || ('student:'+Date.now());
+    const existing = spEditingStudentId ? await storageGet(id) : null;
+    const record = {
+      id, name,
+      birthdate: document.getElementById('spStBirth').value,
+      goal: document.getElementById('spStGoal').value.trim(),
+      notes: document.getElementById('spStNotes').value.trim(),
+      createdAt: (existing && existing.createdAt) || Date.now()
+    };
+    await storageSet(id, record);
+    spCurrentStudentId = id;
+    spRenderStudentList();
+    await spOpenStudent(id);
+  });
+
+  async function spOpenStudent(id){
+    const s = await storageGet(id);
+    if(!s) return;
+    spCurrentStudentId = id;
+    document.getElementById('spStudentName').textContent = s.name;
+    let meta = '';
+    if(s.birthdate){ meta += 'Nascimento: '+s.birthdate; }
+    document.getElementById('spStudentMeta').textContent = meta;
+    document.getElementById('spStudentGoal').textContent = s.goal ? ('Objetivo: '+s.goal) : '';
+    document.getElementById('spStudentNotes').textContent = s.notes ? ('Notas: '+s.notes) : '';
+    document.getElementById('spEditStudentBtn').onclick = ()=>{
+      spEditingStudentId = id;
+      document.getElementById('spNewStudentTitle').textContent = 'Editar aluno';
+      document.getElementById('spStName').value = s.name||'';
+      document.getElementById('spStBirth').value = s.birthdate||'';
+      document.getElementById('spStGoal').value = s.goal||'';
+      document.getElementById('spStNotes').value = s.notes||'';
+      document.getElementById('spStMsg').textContent = '';
+      spShow('newStudent');
+    };
+    await spRenderPlanList(id);
+    spShow('student');
+  }
+  document.getElementById('spBackToList').addEventListener('click', ()=>{ spShow('list'); spRenderStudentList(); });
+
+  /* ---- Planos ---- */
+  async function spRenderPlanList(studentId){
+    const keys = await storageList('plan:');
+    const listEl = document.getElementById('spPlanList');
+    let plans = (await Promise.all(keys.map(k=>storageGet(k)))).filter(p=>p && p.studentId===studentId);
+    if(!plans.length){ listEl.innerHTML = '<p class="eval-hint">Este aluno ainda não tem planos. Cria o primeiro!</p>'; return; }
+    plans.sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
+    listEl.innerHTML = plans.map(p=>{
+      const d = new Date(p.updatedAt||p.createdAt||0);
+      return '<div class="sp-plan-card" data-id="'+p.id+'">'+
+        '<div class="sp-plan-card-head"><h4 data-open="'+p.id+'">'+p.name+'</h4>'+
+        '<div class="sp-plan-actions"><button class="track-remove" data-dup="'+p.id+'" title="Duplicar">⧉</button>'+
+        '<button class="track-remove" data-delplan="'+p.id+'" title="Eliminar">✕</button></div></div>'+
+        '<div class="sp-plan-meta">'+(p.exercises||[]).length+' exercícios · atualizado '+d.toLocaleDateString('pt-PT')+'</div>'+
+      '</div>';
+    }).join('');
+    listEl.querySelectorAll('[data-open]').forEach(el=>{
+      el.addEventListener('click', ()=>spOpenPlanEditor(el.dataset.open));
+    });
+    listEl.querySelectorAll('[data-dup]').forEach(el=>{
+      el.addEventListener('click', async ()=>{ await spDuplicatePlan(el.dataset.dup); });
+    });
+    listEl.querySelectorAll('[data-delplan]').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        if(confirm('Eliminar este plano? Esta ação não pode ser desfeita.')){
+          await storageDelete(el.dataset.delplan);
+          spRenderPlanList(studentId);
+        }
+      });
+    });
+  }
+
+  document.getElementById('spNewPlanBtn').addEventListener('click', ()=>spOpenPlanEditor(null));
+  document.getElementById('spBackFromEditor').addEventListener('click', ()=>spOpenStudent(spCurrentStudentId));
+
+  async function spOpenPlanEditor(planId){
+    if(planId){
+      const p = await storageGet(planId);
+      spCurrentPlanId = planId;
+      spCurrentPlanExercises = (p.exercises||[]).map(e=>Object.assign({},e));
+      document.getElementById('spPlanName').value = p.name||'';
+      document.getElementById('spDuplicatePlanBtn').style.display = 'inline-block';
+      document.getElementById('spViewPlanBtn').style.display = 'inline-block';
+    } else {
+      spCurrentPlanId = null;
+      spCurrentPlanExercises = [];
+      document.getElementById('spPlanName').value = '';
+      document.getElementById('spDuplicatePlanBtn').style.display = 'none';
+      document.getElementById('spViewPlanBtn').style.display = 'none';
+    }
+    document.getElementById('spPlanMsg').textContent = '';
+    spRenderPlanExList();
+    spShow('planEditor');
+  }
+
+  function spRenderPlanExList(){
+    const listEl = document.getElementById('spPlanExList');
+    if(!spCurrentPlanExercises.length){
+      listEl.innerHTML = '<p class="eval-hint">Ainda sem exercícios — usa o botão abaixo para adicionar da biblioteca.</p>';
+      return;
+    }
+    listEl.innerHTML = '';
+    spCurrentPlanExercises.forEach((ex, i)=>{
+      const rec = EXERCISE_BY_FILE[ex.file];
+      const card = document.createElement('div');
+      card.className = 'sp-ex-card';
+      card.innerHTML =
+        '<div class="sp-ex-card-head">'+
+          '<img class="sp-ex-thumb" src="'+encodeURI(IMG_BASE_PATH+ex.file)+'" onerror="this.style.visibility=\'hidden\'">'+
+          '<span class="sp-ex-name">'+(rec?rec.n:ex.file)+'</span>'+
+          '<button class="track-remove" data-up="'+i+'" '+(i===0?'disabled':'')+' title="Mover para cima">▲</button>'+
+          '<button class="track-remove" data-down="'+i+'" '+(i===spCurrentPlanExercises.length-1?'disabled':'')+' title="Mover para baixo">▼</button>'+
+          '<button class="track-remove" data-rmex="'+i+'" title="Remover">✕</button>'+
+        '</div>'+
+        '<div class="sp-ex-grid">'+
+          '<div class="sp-ex-field"><label>Séries</label><input type="number" min="0" data-f="sets" data-i="'+i+'" value="'+(ex.sets??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>Repetições</label><input type="number" min="0" data-f="reps" data-i="'+i+'" value="'+(ex.reps??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>Tempo (s)</label><input type="number" min="0" data-f="time" data-i="'+i+'" value="'+(ex.time??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>Descanso (s)</label><input type="number" min="0" data-f="rest" data-i="'+i+'" value="'+(ex.rest??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>Carga (kg)</label><input type="number" min="0" step="0.5" data-f="load" data-i="'+i+'" value="'+(ex.load??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>RPE</label><input type="number" min="0" max="10" data-f="rpe" data-i="'+i+'" value="'+(ex.rpe??'')+'"></div>'+
+          '<div class="sp-ex-field"><label>Distância</label><input type="text" data-f="distance" data-i="'+i+'" value="'+(ex.distance??'')+'"></div>'+
+        '</div>'+
+        '<div class="sp-ex-notes"><label style="display:block;font-size:10.5px;color:var(--text-dim);margin-bottom:3px;">Notas do treinador</label>'+
+          '<textarea rows="2" data-f="notes" data-i="'+i+'">'+(ex.notes||'')+'</textarea></div>';
+      listEl.appendChild(card);
+    });
+    listEl.querySelectorAll('[data-f]').forEach(inp=>{
+      const ev = inp.tagName==='TEXTAREA' ? 'input' : 'input';
+      inp.addEventListener(ev, e=>{
+        spCurrentPlanExercises[+e.target.dataset.i][e.target.dataset.f] = e.target.value;
+      });
+    });
+    listEl.querySelectorAll('[data-rmex]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        spCurrentPlanExercises.splice(+e.target.dataset.rmex,1);
+        spRenderPlanExList();
+      });
+    });
+    listEl.querySelectorAll('[data-up]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const i = +e.target.dataset.up;
+        if(i>0){ const t=spCurrentPlanExercises[i-1]; spCurrentPlanExercises[i-1]=spCurrentPlanExercises[i]; spCurrentPlanExercises[i]=t; spRenderPlanExList(); }
+      });
+    });
+    listEl.querySelectorAll('[data-down]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const i = +e.target.dataset.down;
+        if(i<spCurrentPlanExercises.length-1){ const t=spCurrentPlanExercises[i+1]; spCurrentPlanExercises[i+1]=spCurrentPlanExercises[i]; spCurrentPlanExercises[i]=t; spRenderPlanExList(); }
+      });
+    });
+  }
+
+  document.getElementById('spAddExBtn').addEventListener('click', ()=>{
+    openExPickerGeneric(rec=>{
+      spCurrentPlanExercises.push({ file:rec.f, sets:3, reps:12, time:'', rest:60, load:'', rpe:'', distance:'', notes:'' });
+      spRenderPlanExList();
+    });
+  });
+
+  document.getElementById('spSavePlanBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('spPlanName').value.trim();
+    const msg = document.getElementById('spPlanMsg');
+    if(!name){ msg.textContent = 'Dá um nome ao plano.'; return; }
+    if(!spCurrentStudentId){ msg.textContent = 'Nenhum aluno selecionado.'; return; }
+    const id = spCurrentPlanId || ('plan:'+Date.now());
+    const existing = spCurrentPlanId ? await storageGet(id) : null;
+    const record = {
+      id, studentId: spCurrentStudentId, name,
+      exercises: spCurrentPlanExercises,
+      status: 'ativo',
+      createdAt: (existing && existing.createdAt) || Date.now(),
+      updatedAt: Date.now()
+    };
+    await storageSet(id, record);
+    spCurrentPlanId = id;
+    // guarda sempre uma versão no histórico ao guardar
+    const histId = 'history:'+Date.now();
+    await storageSet(histId, {
+      id: histId, studentId: spCurrentStudentId, planId: id, planName: name,
+      exercises: spCurrentPlanExercises, savedAt: Date.now()
+    });
+    msg.textContent = 'Plano guardado.';
+    document.getElementById('spDuplicatePlanBtn').style.display = 'inline-block';
+    document.getElementById('spViewPlanBtn').style.display = 'inline-block';
+    setTimeout(async ()=>{ await spOpenStudent(spCurrentStudentId); }, 700);
+  });
+
+  async function spDuplicatePlan(planId){
+    const p = await storageGet(planId);
+    if(!p) return;
+    const newId = 'plan:'+Date.now();
+    const record = {
+      id:newId, studentId:p.studentId, name:p.name+' (cópia)',
+      exercises:(p.exercises||[]).map(e=>Object.assign({},e)),
+      status:'ativo', createdAt:Date.now(), updatedAt:Date.now()
+    };
+    await storageSet(newId, record);
+    const histId = 'history:'+Date.now();
+    await storageSet(histId, { id:histId, studentId:p.studentId, planId:newId, planName:record.name, exercises:record.exercises, savedAt:Date.now() });
+    spRenderPlanList(p.studentId);
+  }
+  document.getElementById('spDuplicatePlanBtn').addEventListener('click', async ()=>{
+    if(!spCurrentPlanId) return;
+    await spDuplicatePlan(spCurrentPlanId);
+    await spOpenStudent(spCurrentStudentId);
+  });
+
+  document.getElementById('spViewPlanBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('spPlanName').value.trim() || 'Plano de treino';
+    let cards = '';
+    spCurrentPlanExercises.forEach(ex=>{
+      const rec = EXERCISE_BY_FILE[ex.file];
+      cards += '<div class="ex-card"><h2>'+(rec?rec.n:ex.file)+'</h2>'+
+        '<img src="'+encodeURI(IMG_BASE_PATH+ex.file)+'" alt="" onerror="this.style.display=\'none\'">'+
+        (rec && rec.how ? '<p class="desc"><b>Como fazer:</b> '+rec.how+'</p>' : (rec && rec.desc ? '<p class="desc">'+rec.desc+'</p>' : '')) +
+        '<div class="times">'+
+          [ex.sets?('Séries: '+ex.sets):null, ex.reps?('Repetições: '+ex.reps):null, ex.time?('Tempo: '+ex.time+'s'):null,
+            ex.rest?('Descanso: '+ex.rest+'s'):null, ex.load?('Carga: '+ex.load+'kg'):null, ex.rpe?('RPE: '+ex.rpe):null,
+            ex.distance?('Distância: '+ex.distance):null].filter(Boolean).join(' · ')+
+        '</div>'+
+        (ex.notes ? '<p class="desc" style="margin-top:8px;"><b>Notas:</b> '+ex.notes+'</p>' : '')+
+      '</div>';
+    });
+    const html = '<!DOCTYPE html><html lang="pt-PT"><head><meta charset="UTF-8"><title>'+name+'</title>'+
+      '<style>'+
+      'body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#181818;max-width:760px;margin:0 auto;background:#faf9f7;}'+
+      'h1{margin:0 0 20px;font-size:26px;}'+
+      '.ex-card{background:#fff;border:1px solid #e4e4e4;border-radius:8px;padding:18px 20px;margin-bottom:16px;}'+
+      '.ex-card h2{margin:0 0 10px;font-size:18px;}'+
+      '.ex-card img{display:block;max-width:220px;max-height:220px;object-fit:contain;margin-bottom:12px;border-radius:6px;background:#f0f0f0;}'+
+      '.desc{font-size:14px;line-height:1.55;margin:0 0 10px;}'+
+      '.times{font-size:13px;color:#333;font-weight:bold;}'+
+      '.print-btn{margin:0 0 22px;background:#181818;color:#fff;border:none;border-radius:4px;padding:10px 18px;font-size:13px;cursor:pointer;}'+
+      '@media print{ .print-btn{display:none;} }'+
+      '</style></head><body>'+
+      '<h1>'+name+'</h1>'+
+      '<button class="print-btn" onclick="window.print()">Imprimir / Guardar em PDF</button>'+
+      cards+
+      '</body></html>';
+    const blob = new Blob([html], {type:'text/html'});
+    window.open(URL.createObjectURL(blob), '_blank');
+  });
+
+  /* ---- Evolução ---- */
+  document.getElementById('spEvolutionBtn').addEventListener('click', async ()=>{
+    const keys = await storageList('history:');
+    let hist = (await Promise.all(keys.map(k=>storageGet(k)))).filter(h=>h && h.studentId===spCurrentStudentId);
+    const filesSeen = {};
+    hist.forEach(h=>(h.exercises||[]).forEach(e=>{ if(e.file) filesSeen[e.file]=true; }));
+    const sel = document.getElementById('spEvoExSelect');
+    const files = Object.keys(filesSeen);
+    if(!files.length){
+      sel.innerHTML = '<option value="">Sem histórico ainda</option>';
+      document.getElementById('spEvoList').innerHTML = '<p class="eval-hint">Este aluno ainda não tem planos guardados no histórico.</p>';
+    } else {
+      files.sort((a,b)=>{
+        const na = EXERCISE_BY_FILE[a]?EXERCISE_BY_FILE[a].n:a, nb = EXERCISE_BY_FILE[b]?EXERCISE_BY_FILE[b].n:b;
+        return na.localeCompare(nb,'pt');
+      });
+      sel.innerHTML = files.map(f=>'<option value="'+f+'">'+(EXERCISE_BY_FILE[f]?EXERCISE_BY_FILE[f].n:f)+'</option>').join('');
+      spRenderEvolution(hist, files[0]);
+    }
+    spShow('evolution');
+  });
+  document.getElementById('spBackFromEvolution').addEventListener('click', ()=>spOpenStudent(spCurrentStudentId));
+
+  async function spRenderEvolution(hist, file){
+    if(!hist){
+      const keys = await storageList('history:');
+      hist = (await Promise.all(keys.map(k=>storageGet(k)))).filter(h=>h && h.studentId===spCurrentStudentId);
+    }
+    const rows = [];
+    hist.forEach(h=>{
+      (h.exercises||[]).forEach(e=>{
+        if(e.file===file){ rows.push({ savedAt:h.savedAt, planName:h.planName, ex:e }); }
+      });
+    });
+    rows.sort((a,b)=>a.savedAt-b.savedAt);
+    const listEl = document.getElementById('spEvoList');
+    if(!rows.length){ listEl.innerHTML = '<p class="eval-hint">Sem registos para este exercício.</p>'; return; }
+    listEl.innerHTML = rows.map(r=>{
+      const d = new Date(r.savedAt);
+      const parts = [r.ex.sets?('Séries: '+r.ex.sets):null, r.ex.reps?('Reps: '+r.ex.reps):null,
+        r.ex.load?('Carga: '+r.ex.load+'kg'):null, r.ex.time?('Tempo: '+r.ex.time+'s'):null, r.ex.rpe?('RPE: '+r.ex.rpe):null]
+        .filter(Boolean).join(' · ');
+      return '<div class="sp-evo-item"><span class="sp-evo-date">'+d.toLocaleDateString('pt-PT')+'</span> — '+r.planName+'<br>'+parts+'</div>';
+    }).join('');
+  }
+  document.getElementById('spEvoExSelect').addEventListener('change', e=>spRenderEvolution(null, e.target.value));
 
   /* ============ WAKE LOCK (manter ecrã ligado durante a aula) ============ */
   let wakeLock = null;
@@ -2394,37 +2859,21 @@
     else { unlockKeyUI(''); }
   })();
 
-  /* ============ ECRÃ DE LOGIN (password única para abrir a app) ============ */
+  /* ============ ECRÃ DE LOGIN (password única, fixa no código) ============ */
+  const APP_PASSWORD = 'aula2026'; // muda aqui se quiseres outra password
   const loginGate = document.getElementById('loginGate');
-  const loginCreateView = document.getElementById('loginCreateView');
-  const loginEnterView = document.getElementById('loginEnterView');
 
-  (async function initLoginGate(){
-    const hash = await storageGet('settings:appPassHash');
-    if(hash){
-      loginCreateView.style.display = 'none';
-      loginEnterView.style.display = 'block';
-    } else {
-      loginCreateView.style.display = 'block';
-      loginEnterView.style.display = 'none';
+  (function initLoginGate(){
+    if(sessionStorage.getItem('ritmo:loggedIn')==='1'){
+      loginGate.classList.add('hide');
     }
   })();
 
-  document.getElementById('loginCreateBtn').addEventListener('click', async ()=>{
-    const p1 = document.getElementById('loginNewPass').value;
-    const p2 = document.getElementById('loginNewPass2').value;
-    const msg = document.getElementById('loginCreateMsg');
-    if(!p1){ msg.textContent = 'Escreve uma password.'; return; }
-    if(p1!==p2){ msg.textContent = 'As passwords não coincidem.'; return; }
-    await storageSet('settings:appPassHash', simpleHash(p1));
-    loginGate.classList.add('hide');
-  });
-
-  document.getElementById('loginEnterBtn').addEventListener('click', async ()=>{
+  document.getElementById('loginEnterBtn').addEventListener('click', ()=>{
     const pass = document.getElementById('loginPass').value;
     const msg = document.getElementById('loginEnterMsg');
-    const hash = await storageGet('settings:appPassHash');
-    if(simpleHash(pass)===hash){
+    if(pass===APP_PASSWORD){
+      sessionStorage.setItem('ritmo:loggedIn','1');
       loginGate.classList.add('hide');
     } else {
       msg.textContent = 'Password incorreta.';
@@ -2433,30 +2882,11 @@
   document.getElementById('loginPass').addEventListener('keydown', e=>{
     if(e.key==='Enter') document.getElementById('loginEnterBtn').click();
   });
-  document.getElementById('loginNewPass2').addEventListener('keydown', e=>{
-    if(e.key==='Enter') document.getElementById('loginCreateBtn').click();
-  });
 
-  document.getElementById('loginResetLink').addEventListener('click', async (e)=>{
-    e.preventDefault();
-    if(confirm('Isto apaga a password guardada neste dispositivo e vais poder criar uma nova. Continuar?')){
-      await storageDelete('settings:appPassHash');
-      loginEnterView.style.display = 'none';
-      loginCreateView.style.display = 'block';
-    }
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click', async ()=>{
-    const hash = await storageGet('settings:appPassHash');
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    sessionStorage.removeItem('ritmo:loggedIn');
     document.getElementById('loginPass').value = '';
     document.getElementById('loginEnterMsg').textContent = '';
-    if(hash){
-      loginCreateView.style.display = 'none';
-      loginEnterView.style.display = 'block';
-    } else {
-      loginCreateView.style.display = 'block';
-      loginEnterView.style.display = 'none';
-    }
     loginGate.classList.remove('hide');
   });
 
